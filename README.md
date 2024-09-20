@@ -1,6 +1,5 @@
 # novastar-coex
-A javascript library for control of NovaStar COEX video wall processors
-
+A javascript library for control of NovaStar COEX video wall processors (MX40 Pro, KU20, CX80 Pro).
 
 # Usage
 
