@@ -196,15 +196,14 @@ function ApiV1_4(ip, port) {
       });
   };
 
-  // PUT /api/v1/device/screen/displaymode
+  // PUT /api/v1/screen/output/displaymode
   this.displaymode = function (value, cb) {
     // 0 = normal
     // 1 = blackout
     // 2 = freeze
 
     console.log("adjust display mode of the screen", value);
-    var url = this.baseurl + "device/screen/displaymode";
-
+    var url = this.baseurl + "screen/output/displaymode";
     //console.log(url);
 
     axios
@@ -280,7 +279,7 @@ function ApiV1_4(ip, port) {
   };
 
   //set input
-  // PUT /api/v1/device/screen/input
+  // PUT /api/v1/screen/layer/input
   this.input = function (input, cb) {
     var baseurl = this.baseurl;
 
@@ -302,7 +301,7 @@ function ApiV1_4(ip, port) {
         return;
       }
 
-      var url = baseurl + "screen/input";
+      var url = baseurl + "screen/layer/input";
       var payload = { groupId: groupId };
 
       axios
@@ -329,9 +328,9 @@ function ApiV1_4(ip, port) {
     });
   };
 
-  //GET /api/v1/device/preset
+  //GET /api/v1/preset
   this.presets = function (cb) {
-    var url = this.baseurl + "device/preset";
+    var url = this.baseurl + "preset";
     axios
       .get(url)
       .then(function (response) {
@@ -343,7 +342,7 @@ function ApiV1_4(ip, port) {
       });
   };
 
-  //PUT /api/v1/device/currentpreset
+  //POST /api/v1/preset/current/update
   this.preset = function (preset, cb) {
     console.log("select preset", preset);
 
@@ -365,11 +364,11 @@ function ApiV1_4(ip, port) {
         return;
       }
 
-      var url = baseurl + "currentpreset";
+      var url = baseurl + "preset/current/update";
       var payload = { sequenceNumber: sequenceNumber };
 
       axios
-        .put(url, payload)
+        .post(url, payload)
         .then(function (response) {
           responseparser(response, cb, "data.data");
         })
@@ -402,7 +401,7 @@ function ApiV1_4(ip, port) {
 
   /*
   Request parameter(json format)
-	{ "name": “” //Original }
+	{ "name": "Original" }
 	Name parameter meaning
 	From input:"From input"
 	Original:""
@@ -411,6 +410,23 @@ function ApiV1_4(ip, port) {
 	Rec.2020:"Rec.2020"
 	Custom:"Custom"
   */
+
+
+  //GET /api/v1/device/monitor/info
+  this.monitor = function (cb) {
+    var url = this.baseurl + "device/monitor/info";
+    axios
+      .get(url)
+      .then(function (response) {
+        responseparser(response, cb, "data.data");
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false);
+      });
+  };
+
+  
 
   this.colorspace = function (input, hdr) {
     console.log(ip);
@@ -436,6 +452,8 @@ function ApiV1_4(ip, port) {
         if (typeof cb == "function") return cb(null, error);
       });
   };
+
+
 
   // Adjust test pattern
   // mode
@@ -467,7 +485,7 @@ function ApiV1_4(ip, port) {
   //   state : 0-1
   // }
   // [optional] callback function
-  // PUT /api/v1/device/screen/controller/pattern/test
+  // PUT /api/v1/device/input/pattern/test
   this.testpattern = function (value, params, cb) {
     switch (value) {
       // case "white":
@@ -560,7 +578,7 @@ function ApiV1_4(ip, port) {
         break;
     }
 
-    var url = this.baseurl + "device/screen/controller/pattern/test";
+    var url = this.baseurl + "device/input/pattern/test";
     var payload = {
       mode: mode,
     };
@@ -581,5 +599,6 @@ function ApiV1_4(ip, port) {
       });
   };
 }
+
 
 module.exports = ApiV1_4;
