@@ -1,4 +1,4 @@
-// This is the API for version 1.0-1.3 of the API, and will no longer be maintained. This is here for backwards compatibility.
+// This is the API for version 1.4 of the API
 
 const axios = require("axios");
 const _ = require("lodash");
@@ -27,7 +27,11 @@ function ApiV1_4(ip, port) {
     if (typeof callback == "function") return callback(response);
   };
 
-  //syntax sugar for diplay modes
+  this.apiversion = function () {
+    return "1.4";
+  };
+
+  //syntax sugar for display modes
   this.blackout = function (cb) {
     console.log("blackout the screen");
     this.displaymode(1, cb);
@@ -61,6 +65,37 @@ function ApiV1_4(ip, port) {
     var payload = {
       ratio: brightness,
       idList: cabinetids,
+    };
+
+    // console.log(url);
+    // console.log(payload);
+
+    axios
+      .put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // requires a list of screenids to adjust brightness on that screen
+  // PUT /api/v1/screen/brightness
+  this.screenbrightness = function (brightness, screenids, cb) {
+    if (typeof screenids == "function") {
+      cb = screenids;
+      return cb(false, "screenids is required");
+    }
+
+    if (brightness > 1) brightness = brightness / 100; // most likely is a percentage
+    console.log("adjust brightness ", brightness);
+
+    var url = this.baseurl + "screen/brightness";
+    var payload = {
+      ratio: brightness,
+      screenIdList: screenids,
     };
 
     // console.log(url);
@@ -411,7 +446,6 @@ function ApiV1_4(ip, port) {
 	Custom:"Custom"
   */
 
-
   //GET /api/v1/device/monitor/info
   this.monitor = function (cb) {
     var url = this.baseurl + "device/monitor/info";
@@ -425,8 +459,6 @@ function ApiV1_4(ip, port) {
         if (typeof cb == "function") return cb(false);
       });
   };
-
-  
 
   this.colorspace = function (input, hdr) {
     console.log(ip);
@@ -452,8 +484,6 @@ function ApiV1_4(ip, port) {
         if (typeof cb == "function") return cb(null, error);
       });
   };
-
-
 
   // Adjust test pattern
   // mode

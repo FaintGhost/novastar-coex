@@ -28,6 +28,10 @@ function ApiV1_0(ip, port) {
     if (typeof callback == "function") return callback(response);
   };
 
+  this.apiversion = function() {
+    return "1.0";
+  };
+
   //syntax sugar for diplay modes
   this.blackout = function (cb) {
     console.log("blackout the screen");

@@ -1,43 +1,21 @@
-const _ = require("lodash");
-const axios = require("axios");
 const ApiV1_0 = require("./api-v1.0");
 const ApiV1_4 = require("./api-v1.4");
 
-module.exports = class Novastar {
-  constructor(ip) {
+class Novastar {
+  constructor(ip, options = {}) {
     this.ip = ip;
-    this.port = 8001;
-    this.debug = false;
-    this.baseurl = `http://${this.ip}:${this.port}/api/v1/`;
+    this.port = options.port || 8001;
+    this.debug = options.debug || false;
+    this.baseurl = `http://${ip}:${this.port}/api/v1/`;
     this.cache = {};
-    this.apiVersion = null;
-    this.api = null;
-    this.ready = this.checkApiVersion();
+    this.apiVersion = options.apiVersion || "1.4";
+    this.api = this.apiVersion === "1.0" ? new ApiV1_0(this.ip, this.port) : new ApiV1_4(this.ip, this.port);
     this.initializeMethods();
   }
 
-  async checkApiVersion() {
-    const url = this.baseurl + "screen";
-
-    try {
-      await axios.get(url);
-      this.apiVersion = "1.4";
-      console.log("Using API v1.4");
-      this.api = new ApiV1_4(this.ip, this.port);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        this.apiVersion = "1.0";
-        this.api = new ApiV1_0(this.ip, this.port);
-        console.log("Using API v1.0");
-      } else {
-        console.error("Error checking API version:", error);
-        throw error;
-      }
-    }
-  }
-
   initializeMethods() {
-    let methods = [
+    const methods = [
+      "apiversion",
       "blackout",
       "normal",
       "freeze",
@@ -64,14 +42,19 @@ module.exports = class Novastar {
     ];
 
     if (this.apiVersion === "1.4") {
-      methods = [...methods, ...v1_4Methods];
+      methods.push(...v1_4Methods);
     }
 
     methods.forEach((method) => {
-      this[method] = async function (...args) {
-        await this.ready;
-        return this.api[method](...args);
+      this[method] = (...args) => {
+        if (typeof this.api[method] === 'function') {
+          return this.api[method](...args);
+        } else {
+          throw new Error(`Method '${method}' is not implemented in API version ${this.apiVersion}`);
+        }
       };
     });
   }
-};
+}
+
+module.exports = Novastar;
