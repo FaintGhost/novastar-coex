@@ -47,9 +47,29 @@ function ApiV1_4(ip, port) {
     this.displaymode(2, cb);
   };
 
+  this.brightness = function (brightness, cb) {
+    console.log("adjust brightness", brightness);
+
+    // First, get the list of screen IDs
+    this.screen((response) => {
+      console.log("screen response");
+      console.log(response);
+      if (response && response.screens) {
+        const screenIds = response.screens.map(screen => screen.screenID);
+        console.log(screenIds);
+        
+        this.screenbrightness(brightness, screenIds, cb);
+      } else {
+        if (typeof cb == "function") return cb(false, { error: "Failed to retrieve screen IDs" });
+      }
+    });
+
+  }
+
+
   // can also take a list of cabinet ids
   // PUT /api/v1/device/cabinet/brightness
-  this.brightness = function (brightness, cabinetids, cb) {
+  this.cabinetbrightness = function (brightness, cabinetids, cb) {
     if (typeof cabinetids == "function") {
       cb = cabinetids;
       cabinetids = null;
@@ -84,22 +104,27 @@ function ApiV1_4(ip, port) {
   // requires a list of screenids to adjust brightness on that screen
   // PUT /api/v1/screen/brightness
   this.screenbrightness = function (brightness, screenids, cb) {
+  
     if (typeof screenids == "function") {
       cb = screenids;
-      return cb(false, "screenids is required");
+    }
+
+    if (typeof screenids == "string") {
+      screenids = [screenids];
     }
 
     if (brightness > 1) brightness = brightness / 100; // most likely is a percentage
     console.log("adjust brightness ", brightness);
 
+
     var url = this.baseurl + "screen/brightness";
     var payload = {
-      ratio: brightness,
+      brightness: brightness,
       screenIdList: screenids,
     };
 
-    // console.log(url);
-    // console.log(payload);
+    console.log(url);
+    console.log(payload);
 
     axios
       .put(url, payload)
@@ -111,6 +136,17 @@ function ApiV1_4(ip, port) {
         if (typeof cb == "function") return cb(false, error);
       });
   };
+
+  this.screen = function (cb) {
+    var url = this.baseurl + "screen";
+    axios.get(url).then(function (response) {
+      //console.log(response);
+      responseparser(response, cb, "data.data");
+    }).catch(function (error) {
+      console.log(error);
+      if (typeof cb == "function") return cb(false);
+    });
+  }
 
   // Adjust color temperature
   // can also take a list of cabinet ids

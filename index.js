@@ -38,6 +38,9 @@ class Novastar {
 
     const v1_4Methods = [
       "monitor",
+      "screenbrightness",
+      "cabinetbrightness",
+      "screen",
       // Add more v1.4-specific methods here
     ];
 
