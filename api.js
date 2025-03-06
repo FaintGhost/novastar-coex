@@ -3,7 +3,7 @@
 const axios = require("axios");
 const _ = require("lodash");
 
-function ApiV1_4(ip, port) {
+function Api(ip, port) {
   this.baseurl = `http://${ip}:${port}/api/v1/`;
 
   var responseparser = function (response, callback, path) {
@@ -795,4 +795,4 @@ function ApiV1_4(ip, port) {
 }
 
 
-module.exports = ApiV1_4;
+module.exports = Api;

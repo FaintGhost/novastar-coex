@@ -1,15 +1,13 @@
 # novastar-coex
 A javascript library for control of NovaStar COEX video wall processors (MX40 Pro, KU20, CX80 Pro).
 
-# API Versions
+# API Version
 
-COEX processors with firmware versions 1.4.0 and above support a new API which has some differences and new features.  This library supports the API versions 1.0-1.3 (Legacy) and 1.4 (Current). Not all methods will be available in the Legacy version.  v1.4+ methods will be tagged with "v1.4+" in the documentation below.
+This library supports API version 1.4, which requires COEX processors with firmware versions 1.4.0 and above. The legacy API support (v1.0-1.3) has been removed.
 
-The legacy API support is deprecated, and may be removed in a future release.  It is recommended to update to the latest firmware and use the new API.
-
-```
-const novastar = new Novastar("192.168.1.101"); // Use API v1.4 (default)
-const novastar = new Novastar("192.168.1.100", { apiVersion: "1.0" }); // Use API legacy v1.0
+```javascript
+const Novastar = require("novastar-coex");
+const novastar = new Novastar("192.168.1.101");
 ```
 
 # Usage
