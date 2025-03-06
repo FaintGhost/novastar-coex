@@ -57,7 +57,7 @@ function ApiV1_4(ip, port) {
       if (response && response.screens) {
         const screenIds = response.screens.map(screen => screen.screenID);
         console.log(screenIds);
-        
+
         this.screenbrightness(brightness, screenIds, cb);
       } else {
         if (typeof cb == "function") return cb(false, { error: "Failed to retrieve screen IDs" });
@@ -104,7 +104,7 @@ function ApiV1_4(ip, port) {
   // requires a list of screenids to adjust brightness on that screen
   // PUT /api/v1/screen/brightness
   this.screenbrightness = function (brightness, screenids, cb) {
-  
+
     if (typeof screenids == "function") {
       cb = screenids;
     }
@@ -472,14 +472,14 @@ function ApiV1_4(ip, port) {
 
   /*
   Request parameter(json format)
-	{ "name": "Original" }
-	Name parameter meaning
-	From input:"From input"
-	Original:""
-	Rec.709:"Rec.709"
-	DCI-P3:"DCI-P3"
-	Rec.2020:"Rec.2020"
-	Custom:"Custom"
+  { "name": "Original" }
+  Name parameter meaning
+  From input:"From input"
+  Original:""
+  Rec.709:"Rec.709"
+  DCI-P3:"DCI-P3"
+  Rec.2020:"Rec.2020"
+  Custom:"Custom"
   */
 
   //GET /api/v1/device/monitor/info
@@ -662,6 +662,134 @@ function ApiV1_4(ip, port) {
       .catch(function (error) {
         console.log(error);
         if (typeof cb == "function") return cb(null, false);
+      });
+  };
+
+  // 3D LUT功能
+  // PUT /api/v1/screen/processing/threedlut/enable
+  this.set3DLUTEnable = function (screenIdList, enable, cb) {
+    var url = this.baseurl + "screen/processing/threedlut/enable";
+    var payload = {
+      screenIdList: screenIdList,
+      enable: enable
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // 输出
+  // PUT /api/v1/screen/output/frame/remaping/enable
+  this.setFrameRemapingEnable = function (screenIdList, enable, cb) {
+    var url = this.baseurl + "screen/output/frame/remaping/enable";
+    var payload = {
+      screenIdList: screenIdList,
+      enable: enable
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // 校正系数管理/热力校正
+  // PUT /api/v1/device/correctionop/cabinets/thermacal/enable
+  this.setThermacalEnable = function (idList, enable, cb) {
+    var url = this.baseurl + "device/correctionop/cabinets/thermacal/enable";
+    var payload = {
+      idList: idList,
+      enable: enable
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // 校正系数管理/校正效果模式
+  // PUT /api/v1/device/correctionop/cabinets/correctioneffect
+  this.setCorrectionEffect = function (cids, enable, switchMode, cb) {
+    var url = this.baseurl + "device/correctionop/cabinets/correctioneffect";
+    var payload = {
+      cids: cids,
+      enable: enable,
+      switchMode: switchMode
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // 画质引擎
+  // PUT /api/v1/device/cabinet/xbit
+  this.setCabinetXbitEnable = function (cids, enable, cb) {
+    var url = this.baseurl + "device/cabinet/xbit";
+    var payload = {
+      cids: cids,
+      enable: enable
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // GET /api/v1/device/correctionop/cabinets/{cid}/effectmode
+  this.getCabinetEffectMode = function (cid, cb) {
+    var url = this.baseurl + "device/correctionop/cabinets/" + cid + "/effectmode";
+
+    axios.get(url)
+      .then(function (response) {
+        responseparser(response, cb, "data");
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
+      });
+  };
+
+  // PUT /api/v1/device/correctionop/cabinets/effectmode
+  this.setCabinetEffectMode = function (cids, mode, cb) {
+    var url = this.baseurl + "device/correctionop/cabinets/effectmode";
+    var payload = {
+      cids: cids,
+      mode: mode
+    };
+
+    axios.put(url, payload)
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false, error);
       });
   };
 }
