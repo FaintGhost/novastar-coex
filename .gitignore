@@ -1,3 +1,25 @@
 
-node_modules/*
+# 依赖目录
+node_modules/
 package-lock.json
+
+# 测试相关
+coverage/
+test-results/
+
+# IDE和编辑器文件
+.vscode/
+.idea/
+*.sublime-*
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+task.md

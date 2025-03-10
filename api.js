@@ -452,9 +452,20 @@ function Api(ip, port) {
 
   //get/set HDR per input
   //PUT api/v1/device/input/{id}/hdrmode
-  this.hdr = function (input, hdr) {
-    console.log(ip);
+  this.hdr = function (value, cb) {
     console.log("adjust display HDR of the screen", value);
+    var url = this.baseurl + "screen/output/hdr";
+    //console.log(url);
+
+    axios
+      .put(url, { enable: value })
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false);
+      });
   };
 
   //set dynamic boost
@@ -462,9 +473,20 @@ function Api(ip, port) {
   // PUT api/v1/device/processing/imagequality/ede/enable
   // PUT /api/v1/device/processing/imagequality/abl/enable
   // PUT /api/v1/device/processing/imagequality/itmo/enable
-  this.dynamicboost = function (input, hdr) {
-    console.log(ip);
+  this.dynamicboost = function (value, cb) {
     console.log("adjust dynamic boost", value);
+    var url = this.baseurl + "screen/output/dynamicboost";
+    //console.log(url);
+
+    axios
+      .put(url, { enable: value })
+      .then(function (response) {
+        responseparser(response, cb);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (typeof cb == "function") return cb(false);
+      });
   };
 
   //Color Space
