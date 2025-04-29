@@ -26,7 +26,6 @@ class COEX {
       "input",
       "getPreset",
       "applyPreset",
-      "hdr",
       "dynamicboost",
       "colorspace",
       "monitor",
@@ -34,7 +33,8 @@ class COEX {
       "screen",
       "enable3DLut",
       "getDisplayParams",
-      "setHdrMode"
+      "setHdrMode",
+      "getDisplayState"
     ];
 
     methods.forEach((method) => {

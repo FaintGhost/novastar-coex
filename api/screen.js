@@ -236,7 +236,7 @@ module.exports = function (instance, responseparser) {
   const getDisplayParams = function () {
     return new Promise(async (resolve, reject) => {
       const url = baseurl + "/api/v1/screen/displayparams";
-      console.log("Get screen display parameters");
+      // console.log("Get screen display parameters");
       try {
         const response = await fetch(url);
         const data = await response.json();
@@ -252,6 +252,26 @@ module.exports = function (instance, responseparser) {
     });
   };
 
+  // Returns a Promise to get the current display state (mapping and display mode)
+  const getDisplayState = function () {
+    return new Promise(async (resolve, reject) => {
+      const url = baseurl + "/api/v1/screen/output/display/state";
+      // console.log("Get screen output display state");
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}, message: ${data?.message || response.statusText}`);
+        }
+        // Resolve with the 'data' property using responseparser
+        resolve(responseparser(data, "data"));
+      } catch (error) {
+        console.error("Fetch error (getDisplayState):", error);
+        reject({ error: error.message || 'Fetch failed' });
+      }
+    });
+  };
+
   return {
     screen,
     screenbrightness,
@@ -259,6 +279,7 @@ module.exports = function (instance, responseparser) {
     gamma,
     colortemperature,
     enable3DLut,
-    getDisplayParams // Export the new function
+    getDisplayParams,
+    getDisplayState
   };
 };
