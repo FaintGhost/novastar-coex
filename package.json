@@ -1,14 +1,17 @@
 {
-  "name": "novastar-coex",
-  "version": "1.1.1",
+  "name": "@novastar-dev/coex",
+  "version": "2.0.0",
   "description": "A javascript library for control of NovaStar COEX video wall processors",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atomicinfotech/novastar-coex.git"
+    "url": "git+https://github.com/FaintGhost/novastar-coex.git"
   },
   "keywords": [
     "video",
@@ -17,14 +20,13 @@
     "coex",
     "novastar"
   ],
-  "author": "Kris Dahl",
+  "author": "FaintGhost",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atomicinfotech/novastar-coex/issues"
+    "url": "https://github.com/FaintGhost/novastar-coex/issues"
   },
-  "homepage": "https://github.com/atomicinfotech/novastar-coex#readme",
+  "homepage": "https://github.com/FaintGhost/novastar-coex",
   "dependencies": {
-    "axios": "^1.4.0",
     "lodash": "^4.17.21"
   }
 }

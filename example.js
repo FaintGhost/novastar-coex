@@ -1,87 +1,87 @@
-const Novastar = require("./index");
+const COEX = require('./index'); // Assuming you run this from the novastar-coex directory
 
-const novastar = new Novastar("10.9.10.54");
+// --- Configuration ---
+const DEVICE_IP = '127.0.0.1'; // <-- Replace with your device's IP address
+const DEVICE_PORT = 8001; // Default COEX API port
+// ---------------------
 
-// novastar.brightness(50);
-//novastar.brightness(10);
-//novastar.brightness(.25);
-// novastar.brightness(0);
+const novastar = new COEX(DEVICE_IP, DEVICE_PORT);
 
-//novastar.displaymode(0);
+async function runExamples() {
+  console.log(`--- Running examples against ${DEVICE_IP}:${DEVICE_PORT} ---`);
 
-//novastar.normal();
-//novastar.blackout();
-//novastar.freeze();
+  // Example 1: Get Display Parameters
+  try {
+    console.log('\n[Example 1: Get Display Parameters]');
+    const params = await novastar.getDisplayParams();
+    console.log('Current Display Params:', JSON.stringify(params, null, 2));
+    if (params && params.length > 0) {
+      console.log(` -> Brightness of first screen: ${params[0].brightness * 100}%`);
+      console.log(` -> Color Temp of first screen: ${params[0].colorTemperature}K`);
+    }
+  } catch (error) {
+    console.error('Error getting display parameters:', error);
+  }
 
-// novastar.gamma(.5);
-// novastar.gamma(1);
-// novastar.gamma(2.5);
-// novastar.gamma(4);
-// novastar.gamma(40, 2);
-// novastar.gamma("2g");
-// novastar.gamma();
+  // Example 2: Get Presets
+  try {
+    console.log('\n[Example 2: Get Presets]');
+    const presets = await novastar.getPreset();
+    console.log('Available Presets:', JSON.stringify(presets, null, 2));
+    const activePreset = presets.find(p => p.state === true);
+    if (activePreset) {
+      console.log(` -> Currently active preset: ${activePreset.name} (Seq: ${activePreset.sequenceNumber})`);
+    } else {
+      console.log(' -> No preset is currently active.');
+    }
+  } catch (error) {
+    console.error('Error getting presets:', error);
+  }
 
-// novastar.colortemperature(5000);
-// novastar.colortemperature("1800K");
-// novastar.colortemperature(20000);
-// novastar.colortemperature(1000);
+  // Example 3: Set Brightness (Example: Set to 60%)
+  try {
+    console.log('\n[Example 3: Set Brightness to 60%]');
+    const brightnessResult = await novastar.brightness(60);
+    console.log('Set brightness result:', brightnessResult);
+    // Verify by getting params again (optional)
+    // const updatedParams = await novastar.getDisplayParams();
+    // console.log('Brightness after update (first screen):', updatedParams[0]?.brightness * 100);
+  } catch (error) {
+    console.error('Error setting brightness:', error);
+  }
 
+  // Example 4: Apply Preset (Example: Apply preset named '预设方案2')
+  // Note: Replace '预设方案2' with an actual preset name on your device
+  const presetToApply = '预设方案2';
+  try {
+    console.log(`\n[Example 4: Apply Preset '${presetToApply}']`);
+    const applyResult = await novastar.applyPreset(presetToApply);
+    console.log(`Apply preset '${presetToApply}' result:`, applyResult);
+  } catch (error) {
+    console.error(`Error applying preset '${presetToApply}':`, error);
+  }
 
-// novastar.cabinet(function (response) {
-//   console.log(response);
-// });
+  // Example 5: Get Sources
+  try {
+    console.log('\n[Example 5: Get Input Sources]');
+    const sources = await novastar.sources();
+    console.log('Available Sources:', JSON.stringify(sources, null, 2));
+  } catch (error) {
+    console.error('Error getting sources:', error);
+  }
 
-// novastar.sources(function (sources) {
-//   console.log(sources);
-// });
-
-// novastar.input("DP1.2", function (response, error) {
-//   console.log(response);
-// });
-
-// novastar.input("12G-SDI", function (response, error) {
-//   console.log(response);
-// });
-
-// novastar.input("Random Input", function (response, error) {
-//   if(error) return console.log("Error: ", error);
-//   console.log(response);
-// });
-
-// novastar.presets(function (presets) {
-//   console.log(presets);
-// });
-
-// novastar.preset('DnD Shoot', function (response) {
-//   console.log(response);
-// });
-
-// novastar.preset(11, function (response) {
-//   console.log(response);
-// });
-
-
-// novastar.workingmode(2, function (response) {
-//   console.log(response);
-// });
-
-// novastar.workingmode(3, function (response) {
-//   console.log(response);
-// });
-
-
-
-// novastar.presets(function (presets) {
-//   console.log(presets);
-// });
-
-// novastar.summary(function (response) {
-//   console.log(response);
-// });
-
-// const novastar2 = new Novastar("172.16.1.1");
-// novastar2.brightness(50);
+  // Example 6: Set Display Mode to Normal
+  try {
+    console.log('\n[Example 6: Set Display Mode to Normal]');
+    const normalResult = await novastar.normal(); // Use alias
+    console.log('Set display mode to Normal result:', normalResult);
+  } catch (error) {
+    console.error('Error setting display mode to Normal:', error);
+  }
 
 
-// novastar.testpattern(35);
+  console.log('\n--- Examples finished ---');
+}
 
+// Run the examples
+runExamples();

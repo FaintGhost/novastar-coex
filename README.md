@@ -1,403 +1,313 @@
 # novastar-coex
-A javascript library for control of NovaStar COEX video wall processors
 
+A modern Javascript library for controlling NovaStar COEX video wall processors, specifically targeting the **current (v1.4+) API**.
 
-# Usage
+**Note:** This is a fork of the original `novastar-coex` library. This version has been updated to support the changes introduced in COEX firmware v1.4.0 and **removes support for the legacy API (v1.0-v1.3)** to simplify maintenance and ensure compatibility with modern devices.
 
-## Connecting Instance
+This library provides a promise-based interface for interacting with COEX devices like the MX40 Pro, MX2000 Pro, and CX40 Pro.
 
-```javascript
-const Novastar = require("novastar-coex");
-const novastar = new Novastar("10.10.10.45");
+## Installation
 
-//connect to an additional instance
-const novastar2 = new Novastar("10.10.10.46");
-novastar2.brightness(50);
-
+```bash
+npm i @novastar-dev/coex
 ```
 
-## Brightness
+## Usage
 
-Defaults to all cabinets, but you can pass a list of cabinet ids and a callback function.
-
+### Connecting to a Processor
 
 ```javascript
-novastar.brightness(brightness, [cabinetids], [cb]);
+const Novastar = require('novastar-coex');
+
+// Replace with your device's IP and API port (default is 8001)
+const novastar = new Novastar('192.168.0.10', 8001);
+
+// All methods return Promises, so use async/await or .then()/.catch()
+async function getDeviceSources() {
+  try {
+    const sources = await novastar.sources();
+    console.log('Available Sources:', sources);
+  } catch (error) {
+    console.error('Failed to get sources:', error);
+  }
+}
+
+getDeviceSources();
 ```
 
-```javascript
-//Examples
-novastar.brightness(50);
-novastar.brightness(10);
-novastar.brightness(.25);
-novastar.brightness(0);
-```
+## API Methods & Examples
 
-## Display Mode
+All methods return Promises. Use `async/await` within an `async` function for cleaner code.
 
-Change the display mode of the processor.
+### Get Presets (`getPreset`)
 
-- 0 = Normal
-- 1 = Blackout
-- 2 = Freeze
+Retrieves the list of presets stored on the device.
 
 ```javascript
-novastar.displaymode(displaymode, [cb]);
-```
-
-```javascript
-//Examples
-novastar.displaymode(0); //normal
-novastar.displaymode(1); //blackout
-novastar.displaymode(2); //freeze
-
-//Altenative syntax
-novastar.normal();
-novastar.blackout();
-novastar.freeze();
-```
-
-## Adjust Gamma
-
-Defaults to all cabinets, but you can pass a list of cabinet ids and a callback function.
-
-```javascript
-  // gamma 1.0 to 4.0
-  // [optional] type 0 = red, 1 = blue, 2 = green, 3 = all.  Default = 3
-  // [optional] array of cabinetids
-  // [optional] callback function
-
-
-novastar.brightness(gamma, [type], [cabinetids], [cb]);
-```
-
-```javascript
-//Examples
-novastar.gamma(.5);
-novastar.gamma(1);
-novastar.gamma(2.5);
-novastar.gamma(4);
-novastar.gamma(40, 2);
-novastar.gamma("2g");
-novastar.gamma();
-
-```
-
-## Adjust Color Temperature
-
-Defaults to all cabinets, but you can pass a list of cabinet ids and a callback function.
-
-```javascript
-  // colortemp 1700 to 15000
-  // [optional] array of cabinetids
-  // [optional] callback function
-  // returns response, error
-
-novastar.colortemperature(colortemp, [cabinetids], [cb]);
-
-```
-
-```javascript
-//Examples
-novastar.colortemperature(5500); //daylight
-novastar.colortemperature(3400); //tungsten
-novastar.colortemperature("1800K");
-novastar.colortemperature(20000); //capped at 15000K
-novastar.colortemperature(1000); //capped at 1700K
-
-```
-
-## Get List of cabinets
-
-
-```javascript
-  // returns array of cabinets
-
-novastar.cabinet(function (response) {
-  console.log(response);
-});
-```
-
-```javascript
-//Sample Result
-[
-  {
-    resolution: { width: 176, height: 176 },
-    size: { width: 500, height: 500 },
-    weight: 5,
-    power: 12,
-    gamma: { r: 2.8, g: 2.8, b: 2.8 },
-    colorTemperature: 5000,
-    voltage: 5,
-    rvCardName: 'A4S',
-    brightness: 0.16,
-    customGamma: false,
-    gain: { r: 43, g: 43, b: 43 },
-    outputID: 2,
-    index: 0,
-    bunchesIndex: 0,
-    id: 2238902278684672,
-    moduleCount: 4,
-    cabType: '',
-    indicatorLightState: true,
-    manufacture: '',
-    pointSpacing: '',
-    shortName: '',
-    familyName: '',
-    ncpVersion: '',
-    vsFreMax: 0,
-    angle: 0,
-    moduleSize: { overwrite: false, moduleRow: 255, moduleCol: 255 },
-    rvCardInfo: {
-      firmware: '4.6.1.0',
-      driverChip: '',
-      decodeIc: '',
-      scanNumber: 30,
-      moduleResolution: [Object],
-      refreshRate: 1438.5902,
-      grayScale: 13
-    }
-]
-
-```
-
-## Get List of sources
-
-```javascript
-  // returns array of sources
-
-novastar.sources(function (response) {
-  console.log(response);
-});
-```
-
-```javascript
-//Sample Result
-[
-  {
-    id: 0,
-    type: 9,
-    name: '12G-SDI',
-    step: 0,
-    supportFrameRate: [
-      '23.98',  '24.00',  '25.00',
-      '29.97',  '30.00',  '47.95',
-      '48.00',  '50.00',  '59.94',
-      '60.00',  '71.93',  '72.00',
-      '75.00',  '100.00', '119.88',
-      '120.00', '143.86', '144.00',
-      '240.00'
-    ],
-    supportResolution: [ '3840*2160' ],
-    maxwidth: 4096,
-    maxheight: 4096,
-    minwidth: 800,
-    minheight: 600,
-    actualResolution: { height: 2160, width: 3840 },
-    actualRefreshRate: 60,
-    bitDepth: 0,
-    colorSpace: 'RGB 4:4:4',
-    dynamicRange: 'SDR',
-    gamut: '',
-    range: 0,
-    scanMode: 0,
-    inPhase: false,
-    defaultEDID: { resolution: [Object], refreshRate: 60 },
-    usable: true,
-    groupId: 72,
-    isSupportHDR: true,
-    isSupportMetaData: false,
-    isSupportEDID: false,
-    isSupportInputOverride: true,
-    isSupportColorAdjust: true,
-    sourceChannel: 7,
-    metaData: {
-      minMasterDisplayLight: 0,
-      maxMasterDisplayLight: 0,
-      maxContentLight: 0,
-      maxFrameAvgLight: 0,
-      whitePointX: 0,
-      whitePointY: 0
-    },
-    hDRParams: {
-      overrideHdrType: 2,
-      pqMode: 0,
-      pqMaxCllChecked: true,
-      pqMaxCll: 1000,
-      realHdrType: 2
-    },
-    isSupportHDRParams: true,
-    isSupportPQMaxCllChecked: false,
-    hdrList: [ 0, 1, 2 ]
-  },
-]
-
-```
-
-## Change Input
-
-Change the input.  Currently only works if processor is in "Send Only" Working mode.
-
-```javascript
-  // input Text name or groupId of source
-  // [optional] callback function
-  // returns response, error
-
-novastar.input(input, [cb]);
-
-```
-
-```javascript
-//Examples
-
-novastar.input("DP1.2", function (response, error) {
-  console.log(response);
-});
-
-novastar.input("12G-SDI");
-novastar.input(40); // DP1.2 groupId on MX40 Pro
-
-```
-
-
-## List Presets 
-
-```javascript
-  // cb callback function
-  // returns response, error
-
-novastar.presets(cb);
-
-```
-
-```javascript
-//Examples
-
-novastar.presets(function (presets) {
-  console.log(presets);
-});
-
-//Result
-[
-  {
-    sequenceNumber: 1,
-    time: '2022.12.13 09:58:28.414 Tue',
-    name: 'Preset 1 Calibrated',
-    sourceData: true,
-    outputData: true,
-    screenData: true,
-    processingData: true
-  },
-]
-```
-
-## Change Preset
-
-Change the processor preset.  Optional callback function.
-
-```javascript
-  // preset Text name or sequenceId of the preset
-  // [optional] callback function
-  // returns response, error
-
-novastar.input(preset, [cb]);
-
-```
-
-```javascript
-//Examples
-novastar.preset('Preset 1 Calibrated', function (response) {
-  console.log(response);
-});
-
-novastar.preset(11, function (response) {
-  console.log(response);
-});
-
-```
-
-## Change Workingmode
-
-Change working mode between "Send Only" (Mode 2) and "All-in-One" Advanced Mode (Mode 3).  "Send Only" has reduced latency but only a single video layer.
-
-```javascript
-  // workingmode 2 = "Send Only, 3 = "All-in-One"
-  // [optional] callback function
-  // returns response, error
-
-novastar.input(workingmode, [cb]);
-
-```
-
-```javascript
-//Examples
-novastar.workingmode(2, function (response) { //send only
-  console.log(response);
-});
-
-novastar.workingmode(3, function (response) { //all-in-one
-  console.log(response);
-});
-
-```
-
-
-## Change Internal Test Pattern
-
-
-
-```javascript
-   // mode
-    // 0: Pure color (the color is controlled by the red, green and blue component values below)
-    // 16: Horizontal stripes to the bottom
-    // 17: Horizontal stripes to the right
-    // 18: Slashes
-    // 19: Backslashes
-    // 20: Grid to the bottom right
-    // 21: Grid to the right
-    // 32: Left-to-right red gradient
-    // 33: Left-to-right green gradient
-    // 34: Left-to-right blue gradient
-    // 35: Left-to-right gray gradient
-    // 36: Top-to-bottom red gradient
-    // 37: Top-to-bottom green gradient
-    // 38: Top-to-bottom blue gradient
-    // 39: Top-to-bottom gray gradient
-    // 48: Lightning
-  // parameters
+async function listPresets() {
+  try {
+    const presets = await novastar.getPreset();
+    console.log('Presets:', presets);
+    // Example result item:
     // {
-    //   red: 0-255,
-    //   green: 0-255,
-    //   blue: 0-255,
-    //   gray: 0-255,
-    //   gridWidth: 1,
-    //   moveSpeed: 0-100,
-    //   gradientStretch : 1-20,
-    //   state : 0-1
+    //   sequenceNumber: 1,
+    //   name: '预设方案1',
+    //   state: true, // Indicates if this preset is currently active
+    //   sourceData: true,
+    //   processingData: false,
+    //   outputData: false,
+    //   screenData: true,
+    //   effectSwitch: 1,
+    //   presetUUID: '{dc80bb97-f528-42f5-a2c8-b004b7387890}'
     // }
-  // [optional] callback function
-
-novastar.testpattern(mode, parameters, [cb]);
-
+  } catch (error) {
+    console.error('Failed to get presets:', error);
+  }
+}
+listPresets();
 ```
+
+### Apply Preset (`applyPreset`)
+
+Applies a preset by its name or sequence number. If `screenID` is omitted, it attempts to apply to the first available screen.
 
 ```javascript
-//Examples
-novastar.testpattern(32, function (response, error) {
-  console.log(response);
-});
+// preset: string (name) or number (sequenceNumber)
+// screenID: string (optional) - Target screen ID
 
-novastar.testpattern(16);
+async function applyMyPreset(presetIdentifier) {
+  try {
+    const result = await novastar.applyPreset(presetIdentifier);
+    console.log(`Successfully applied preset '${presetIdentifier}':`, result);
+  } catch (error) {
+    console.error(`Failed to apply preset '${presetIdentifier}':`, error);
+  }
+}
 
+// Apply by name
+applyMyPreset('预设方案1');
+
+// Apply by sequence number (assuming preset with sequenceNumber 2 exists)
+// applyMyPreset(2);
 ```
 
+### Get Display Parameters (`getDisplayParams`)
 
+Retrieves detailed parameters for all connected screens (brightness, color temperature, gamma, etc.).
 
-# Known Issues
+```javascript
+async function checkDisplayParams() {
+  try {
+    const params = await novastar.getDisplayParams();
+    console.log('Display Parameters:', params);
+    // Example result item:
+    // {
+    //   screenId: '...',
+    //   brightness: 0.8, // Value between 0.0 and 1.0
+    //   colorTemperature: 6500,
+    //   gamma: 2.2,
+    //   hdrMode: 0,
+    //   enable3DLut: false
+    //   // ... other parameters
+    // }
+  } catch (error) {
+    console.error('Failed to get display parameters:', error);
+  }
+}
+checkDisplayParams();
+```
 
-1. Input selection currently only works when processor is in "Send Only" working mode.  Input selection on layers when in All in One mode is not yet supported.  As soon as the API supports it, and we get documentation, it will be implemented.
+### Set Color Temperature (`colortemperature`)
 
-2. Setting working mode to 3 (All-In-One) doesn't work.
+Sets the color temperature for specific screens or all screens.
 
-3. If you are running COEX VMP software, the processor will be locked to only recieve API commands from that device/ip.  Attempting to run API commands from any other device/IP will return a "device locked" error.  Current workaround is to close VMP, or run the commands from the same computer that is running the VMP software client.
+```javascript
+// value: number (1700-15000)
+// screenids: string or array of strings (optional) - Defaults to all screens if omitted
+
+async function setScreenColorTemp(temp, screenId = null) {
+  try {
+    const result = await novastar.colortemperature(temp, screenId);
+    console.log(`Set color temperature to ${temp}K for ${screenId || 'all screens'}:`, result);
+  } catch (error) {
+    console.error(`Failed to set color temperature for ${screenId || 'all screens'}:`, error);
+  }
+}
+
+// Set all screens to 6500K
+setScreenColorTemp(6500);
+
+// Set a specific screen (replace 'your_screen_id' with an actual ID)
+// setScreenColorTemp(5000, 'your_screen_id');
+```
+
+### Set Gamma (`gamma`)
+
+Sets the gamma value for specific screens or all screens.
+
+```javascript
+// value: number (1.0 - 4.0)
+// screenids: string or array of strings (optional) - Defaults to all screens if omitted
+
+async function setScreenGamma(gammaValue, screenId = null) {
+  try {
+    const result = await novastar.gamma(gammaValue, screenId);
+    console.log(`Set gamma to ${gammaValue} for ${screenId || 'all screens'}:`, result);
+  } catch (error) {
+    console.error(`Failed to set gamma for ${screenId || 'all screens'}:`, error);
+  }
+}
+
+// Set all screens to gamma 2.2
+setScreenGamma(2.2);
+
+// Set specific screens (replace with actual IDs)
+// setScreenGamma(2.4, ['screen_id_1', 'screen_id_2']);
+```
+
+### Set Brightness (`brightness`)
+
+Sets the overall brightness. The library internally fetches screen IDs and applies the brightness to all of them via the `screenbrightness` API call.
+
+```javascript
+// brightnessValue: number (0-100 or 0.0-1.0) - Library handles conversion if needed.
+
+async function setGlobalBrightness(level) {
+  try {
+    const result = await novastar.brightness(level);
+    console.log(`Set brightness to ${level}:`, result);
+  } catch (error) {
+    console.error(`Failed to set brightness:`, error);
+  }
+}
+
+setGlobalBrightness(75); // Set brightness to 75%
+```
+
+### Set Display Mode (`displaymode`, `normal`, `blackout`, `freeze`)
+
+Changes the output display mode.
+
+```javascript
+// mode: 0 (Normal), 1 (Blackout), 2 (Freeze)
+
+async function setDisplayOutputMode(mode) {
+  try {
+    let result;
+    let modeName;
+    switch (mode) {
+      case 0:
+        result = await novastar.normal(); // Alias for displaymode(0)
+        modeName = 'Normal';
+        break;
+      case 1:
+        result = await novastar.blackout(); // Alias for displaymode(1)
+        modeName = 'Blackout';
+        break;
+      case 2:
+        result = await novastar.freeze(); // Alias for displaymode(2)
+        modeName = 'Freeze';
+        break;
+      default:
+        console.error('Invalid display mode:', mode);
+        return;
+    }
+    // Alternatively, call directly: result = await novastar.displaymode(mode);
+    console.log(`Set display mode to ${modeName}:`, result);
+  } catch (error) {
+    console.error(`Failed to set display mode to ${mode}:`, error);
+  }
+}
+
+setDisplayOutputMode(1); // Set to Blackout
+// setDisplayOutputMode(0); // Set to Normal
+```
+
+### Set Input Source (`input`)
+
+Changes the active input source. **Note:** This might only work correctly when the processor is in "Send Only" mode (see Known Issues).
+
+```javascript
+// inputIdentifier: string (name, e.g., "HDMI 1") or number (groupId)
+
+async function setInput(inputNameOrId) {
+  try {
+    const result = await novastar.input(inputNameOrId);
+    console.log(`Set input to '${inputNameOrId}':`, result);
+  } catch (error) {
+    console.error(`Failed to set input to '${inputNameOrId}':`, error);
+  }
+}
+
+setInput('HDMI 1'); // Set input using its name
+// setInput(40); // Set input using its group ID (example)
+```
+
+### Get Sources (`sources`)
+
+Retrieves a list of available input sources and their properties.
+
+```javascript
+async function listSources() {
+  try {
+    const sourceList = await novastar.sources();
+    console.log('Available Input Sources:', sourceList);
+  } catch (error) {
+    console.error('Failed to get sources:', error);
+  }
+}
+listSources();
+```
+
+### Enable/Disable 3D LUT (`enable3DLut`)
+
+Enables or disables the 3D LUT processing for specific screens or all screens.
+
+```javascript
+// enable: boolean (true to enable, false to disable)
+// screenids: string or array of strings (optional) - Defaults to all screens
+
+async function set3DLutState(isEnabled, screenId = null) {
+  try {
+    const result = await novastar.enable3DLut(isEnabled, screenId);
+    const state = isEnabled ? 'enabled' : 'disabled';
+    console.log(`Set 3D LUT to ${state} for ${screenId || 'all screens'}:`, result);
+  } catch (error) {
+    console.error(`Failed to set 3D LUT state for ${screenId || 'all screens'}:`, error);
+  }
+}
+
+// Enable 3D LUT for all screens
+set3DLutState(true);
+
+// Disable 3D LUT for a specific screen
+// set3DLutState(false, 'your_screen_id');
+```
+
+## Error Handling
+
+Methods return Promises that reject upon API errors or network issues. Always wrap calls in `try...catch` blocks when using `async/await`, or use `.catch()` with promise chains.
+
+```javascript
+async function safeApiCall() {
+  try {
+    const data = await novastar.someMethod();
+    // Process data
+  } catch (error) {
+    console.error('API call failed:', error);
+    // Handle specific errors, e.g., device locked
+    if (error.error === 'device locked') {
+      console.warn('Device might be locked by VMP software.');
+    }
+  }
+}
+```
+
+## Known Issues
+
+*   **VMP Lock:** If you are running the NovaStar VMP software simultaneously, the processor might be locked, preventing API commands from other devices/IPs. Workaround: Close VMP or run your script from the same computer running VMP.
+
+## License
+
+MIT License (Refer to the LICENSE file)
 
