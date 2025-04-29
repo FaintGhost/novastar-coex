@@ -272,6 +272,45 @@ module.exports = function (instance, responseparser) {
     });
   };
 
+  // New function for screen mapping update
+  // Returns a Promise
+  const screenMapping = function (enable, screenids) {
+    return new Promise(async (resolve, reject) => {
+      // Validate enable parameter
+      if (typeof enable !== 'boolean') {
+        console.error("screenMapping: 'enable' parameter must be a boolean (true or false).");
+        return reject({ error: "'enable' parameter must be a boolean" });
+      }
+
+      try {
+        const finalIds = await _resolveScreenIds(instance, screenids); // Use helper
+
+        const url = baseurl + "/api/v1/screen/mapping/update";
+        const payload = {
+          screenIDs: finalIds, // Use resolved IDs
+          enable: enable,
+        };
+        console.log(`Setting screen mapping enable to ${enable} on screens:`, finalIds);
+
+        const response = await fetch(url, {
+          method: 'POST', // Use POST method
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}, message: ${data?.message || response.statusText}`);
+        }
+        resolve(responseparser(data));
+      } catch (error) {
+        // Catch errors from _resolveScreenIds or fetch
+        console.error("Error in screenMapping function:", error);
+        reject(error.error ? error : { error: "Failed to update screen mapping" });
+      }
+    });
+  };
+
+
   return {
     screen,
     screenbrightness,
@@ -280,6 +319,7 @@ module.exports = function (instance, responseparser) {
     colortemperature,
     enable3DLut,
     getDisplayParams,
-    getDisplayState
+    getDisplayState,
+    screenMapping
   };
 };

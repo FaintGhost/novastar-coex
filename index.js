@@ -34,7 +34,8 @@ class COEX {
       "enable3DLut",
       "getDisplayParams",
       "setHdrMode",
-      "getDisplayState"
+      "getDisplayState",
+      "screenMapping"
     ];
 
     methods.forEach((method) => {
