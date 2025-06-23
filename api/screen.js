@@ -37,7 +37,6 @@ const _resolveScreenIds = async (instance, screenids) => {
 
 module.exports = function (instance, responseparser) {
   const baseurl = instance.baseurl;
-
   // Returns a Promise
   const screen = function () {
     return new Promise(async (resolve, reject) => {
@@ -271,29 +270,26 @@ module.exports = function (instance, responseparser) {
       }
     });
   };
-
-  // New function for screen mapping update
-  // Returns a Promise
-  const screenMapping = function (enable, screenids) {
+  // Returns a Promise to set screen mapping (enable/disable canvas mapping)
+  const setMapping = function (enable) {
     return new Promise(async (resolve, reject) => {
       // Validate enable parameter
       if (typeof enable !== 'boolean') {
-        console.error("screenMapping: 'enable' parameter must be a boolean (true or false).");
+        console.error("setMapping: 'enable' parameter must be a boolean (true or false).");
         return reject({ error: "'enable' parameter must be a boolean" });
       }
 
       try {
-        const finalIds = await _resolveScreenIds(instance, screenids); // Use helper
-
-        const url = baseurl + "/api/v1/screen/mapping/update";
+        const url = baseurl + "/api/v1/screen/output/canvas/mapping";
+        const canvasIds = [2048]; // Fixed canvas ID
         const payload = {
-          screenIDs: finalIds, // Use resolved IDs
           enable: enable,
+          canvasIds: canvasIds,
         };
-        console.log(`Setting screen mapping enable to ${enable} on screens:`, finalIds);
+        console.log(`Setting canvas mapping to ${enable} for canvas ID: 2048`);
 
         const response = await fetch(url, {
-          method: 'POST', // Use POST method
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
@@ -303,13 +299,11 @@ module.exports = function (instance, responseparser) {
         }
         resolve(responseparser(data));
       } catch (error) {
-        // Catch errors from _resolveScreenIds or fetch
-        console.error("Error in screenMapping function:", error);
-        reject(error.error ? error : { error: "Failed to update screen mapping" });
+        console.error("Error in setMapping function:", error);
+        reject({ error: error.message || 'Failed to set canvas mapping' });
       }
     });
   };
-
 
   return {
     screen,
@@ -320,6 +314,6 @@ module.exports = function (instance, responseparser) {
     enable3DLut,
     getDisplayParams,
     getDisplayState,
-    screenMapping
+    setMapping
   };
 };

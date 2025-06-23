@@ -1,7 +1,7 @@
 const COEX = require('./index'); // Assuming you run this from the novastar-coex directory
 
 // --- Configuration ---
-const DEVICE_IP = '127.0.0.1'; // <-- Replace with your device's IP address
+const DEVICE_IP = '192.168.0.94'; // <-- Replace with your device's IP address
 const DEVICE_PORT = 8001; // Default COEX API port
 // ---------------------
 
@@ -79,6 +79,14 @@ async function runExamples() {
     console.error('Error setting display mode to Normal:', error);
   }
 
+  // Example 7: Set Mapping (Example: Set mapping for screen 1)
+  try {
+    console.log('\n[Example 7: Set Mapping for Screen]');
+    const mappingResult = await novastar.setMapping(false);
+    console.log('Set mapping result:', mappingResult);
+  } catch (error) {
+    console.error('Error setting mapping for screen', error);
+  }
 
   console.log('\n--- Examples finished ---');
 }
