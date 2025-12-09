@@ -1,8 +1,8 @@
 # novastar-coex
 
-A modern Javascript library for controlling NovaStar COEX video wall processors, specifically targeting the **current (v1.4+) API**.
+A modern Javascript library for controlling NovaStar COEX video wall processors, specifically targeting the **current (v1.5+) API**.
 
-**Note:** This is a fork of the original `novastar-coex` library. This version has been updated to support the changes introduced in COEX firmware v1.4.0 and **removes support for the legacy API (v1.0-v1.3)** to simplify maintenance and ensure compatibility with modern devices.
+**Note:** This is a fork of the original `novastar-coex` library. This version has been updated to support the changes introduced in COEX firmware v1.5.0 and **removes support for the legacy API (v1.0-v1.2.3)** to simplify maintenance and ensure compatibility with modern devices.
 
 This library provides a promise-based interface for interacting with COEX devices like the MX40 Pro, MX2000 Pro, and CX40 Pro.
 
