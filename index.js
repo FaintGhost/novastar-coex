@@ -36,6 +36,7 @@ class COEX {
       "setHdrMode",
       "getDisplayState",
       "setMapping",
+      "getScreenList",
     ];
 
     methods.forEach((method) => {

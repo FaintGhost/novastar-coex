@@ -1,37 +1,87 @@
 // api/screen.js
 const _ = require("lodash");
 
-// Helper function to resolve screen IDs
-const _resolveScreenIds = async (instance, screenids) => {
-  if (screenids) {
-    if (typeof screenids === "string") {
-      return [screenids]; // Return array with single ID
-    } else if (Array.isArray(screenids)) {
-      return screenids; // Return provided array
-    } else {
-      console.error("Invalid screenids format: Must be a string or an array.");
-      throw { error: "Invalid screenids format" }; // Throw error for invalid type
+// Helper function to resolve screen IDs - supports screenIndex, screenID string, array, or options object
+const _resolveScreenIds = async (instance, screenParam) => {
+  // Fetch screen data for index-based lookups
+  const getScreenData = async () => {
+    const screenData = await instance.screen();
+    if (!screenData || !screenData.screens || screenData.screens.length === 0) {
+      throw { error: "No screens found." };
     }
-  } else {
-    // Fetch all screen IDs if none provided
-    try {
-      const screenData = await instance.screen(); // Assumes returns { screens: [...] }
-      if (screenData && screenData.screens) {
-        const finalIds = screenData.screens.map(s => s.screenID);
-        if (finalIds.length === 0) {
-          throw { error: "No screens found." };
-        }
-        return finalIds;
-      } else {
-        console.error("Failed to retrieve screen IDs or invalid response format", screenData);
-        throw { error: "Failed to retrieve screen IDs or invalid response format" };
+    return screenData;
+  };
+
+  // No parameter - return all screen IDs
+  if (screenParam === undefined || screenParam === null) {
+    const screenData = await getScreenData();
+    return screenData.screens.map(s => s.screenID);
+  }
+
+  // String - single screenID
+  if (typeof screenParam === "string") {
+    return [screenParam];
+  }
+
+  // Array - array of screenIDs
+  if (Array.isArray(screenParam)) {
+    return screenParam;
+  }
+
+  // Object with options - supports { screenIndex: number } or { screenIds: [] }
+  if (typeof screenParam === "object") {
+    if (screenParam.screenIds && Array.isArray(screenParam.screenIds)) {
+      return screenParam.screenIds;
+    }
+    if (typeof screenParam.screenIndex === "number") {
+      const screenData = await getScreenData();
+      const screen = screenData.screens[screenParam.screenIndex];
+      if (!screen) {
+        throw { error: `Screen index ${screenParam.screenIndex} not found. Available: 0-${screenData.screens.length - 1}` };
       }
-    } catch (error) {
-      console.error("Error fetching screen IDs:", error);
-      // Re-throw the error or a more specific one
-      throw error.error ? error : { error: "Failed to fetch screen IDs" };
+      return [screen.screenID];
     }
   }
+
+  console.error("Invalid screenParam format");
+  throw { error: "Invalid screen parameter format" };
+};
+
+// Helper function to resolve canvas IDs from screen data
+const _resolveCanvasIds = async (instance, screenParam) => {
+  const screenData = await instance.screen();
+  if (!screenData || !screenData.screens || screenData.screens.length === 0) {
+    throw { error: "No screens found." };
+  }
+
+  let targetScreens = screenData.screens;
+
+  // Filter by screenIndex if provided
+  if (screenParam && typeof screenParam === "object" && typeof screenParam.screenIndex === "number") {
+    const screen = screenData.screens[screenParam.screenIndex];
+    if (!screen) {
+      throw { error: `Screen index ${screenParam.screenIndex} not found. Available: 0-${screenData.screens.length - 1}` };
+    }
+    targetScreens = [screen];
+  }
+
+  // Extract all canvasIDs from target screens
+  const canvasIds = [];
+  targetScreens.forEach(screen => {
+    if (screen.canvases && Array.isArray(screen.canvases)) {
+      screen.canvases.forEach(canvas => {
+        if (canvas.canvasID !== undefined) {
+          canvasIds.push(canvas.canvasID);
+        }
+      });
+    }
+  });
+
+  if (canvasIds.length === 0) {
+    throw { error: "No canvas IDs found in screen data." };
+  }
+
+  return canvasIds;
 };
 
 
@@ -271,7 +321,8 @@ module.exports = function (instance, responseparser) {
     });
   };
   // Returns a Promise to set screen mapping (enable/disable canvas mapping)
-  const setMapping = function (enable) {
+  // screenParam: optional - { screenIndex: number } to target specific screen, or omit for all screens
+  const setMapping = function (enable, screenParam) {
     return new Promise(async (resolve, reject) => {
       // Validate enable parameter
       if (typeof enable !== 'boolean') {
@@ -280,13 +331,13 @@ module.exports = function (instance, responseparser) {
       }
 
       try {
+        const canvasIds = await _resolveCanvasIds(instance, screenParam);
         const url = baseurl + "/api/v1/screen/output/canvas/mapping";
-        const canvasIds = [2048]; // Fixed canvas ID
         const payload = {
           enable: enable,
           canvasIds: canvasIds,
         };
-        console.log(`Setting canvas mapping to ${enable} for canvas ID: 2048`);
+        console.log(`Setting canvas mapping to ${enable} for canvas IDs:`, canvasIds);
 
         const response = await fetch(url, {
           method: 'PUT',
@@ -305,6 +356,28 @@ module.exports = function (instance, responseparser) {
     });
   };
 
+  // Returns a Promise with simplified screen list for Companion dropdowns
+  const getScreenList = function () {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const screenData = await screen();
+        if (!screenData || !screenData.screens) {
+          return resolve([]);
+        }
+        const list = screenData.screens.map((s, index) => ({
+          index: index,
+          id: s.screenID,
+          name: s.screenName || `Screen ${index + 1}`,
+          canvasCount: s.canvases ? s.canvases.length : 0
+        }));
+        resolve(list);
+      } catch (error) {
+        console.error("Error in getScreenList:", error);
+        reject({ error: error.message || 'Failed to get screen list' });
+      }
+    });
+  };
+
   return {
     screen,
     screenbrightness,
@@ -314,6 +387,7 @@ module.exports = function (instance, responseparser) {
     enable3DLut,
     getDisplayParams,
     getDisplayState,
-    setMapping
+    setMapping,
+    getScreenList
   };
 };

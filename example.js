@@ -1,7 +1,7 @@
 const COEX = require('./index'); // Assuming you run this from the novastar-coex directory
 
 // --- Configuration ---
-const DEVICE_IP = '192.168.0.94'; // <-- Replace with your device's IP address
+const DEVICE_IP = '127.0.0.1'; // <-- Replace with your device's IP address
 const DEVICE_PORT = 8001; // Default COEX API port
 // ---------------------
 
@@ -79,13 +79,43 @@ async function runExamples() {
     console.error('Error setting display mode to Normal:', error);
   }
 
-  // Example 7: Set Mapping (Example: Set mapping for screen 1)
+  // Example 7: Get Screen List (for Companion dropdowns)
   try {
-    console.log('\n[Example 7: Set Mapping for Screen]');
+    console.log('\n[Example 7: Get Screen List]');
+    const screenList = await novastar.getScreenList();
+    console.log('Available Screens:', JSON.stringify(screenList, null, 2));
+    // Output example:
+    // [{ index: 0, id: "{8b42c854-...}", name: "New Screen 1", canvasCount: 1 },
+    //  { index: 1, id: "{xxxx-...}", name: "New Screen 2", canvasCount: 2 }]
+  } catch (error) {
+    console.error('Error getting screen list:', error);
+  }
+
+  // Example 8: Set Mapping for all screens (auto-detect canvasIDs)
+  try {
+    console.log('\n[Example 8: Set Mapping for All Screens]');
     const mappingResult = await novastar.setMapping(false);
     console.log('Set mapping result:', mappingResult);
   } catch (error) {
-    console.error('Error setting mapping for screen', error);
+    console.error('Error setting mapping:', error);
+  }
+
+  // Example 9: Set Mapping for specific screen by index
+  try {
+    console.log('\n[Example 9: Set Mapping for Screen Index 0]');
+    const mappingResult = await novastar.setMapping(true, { screenIndex: 0 });
+    console.log('Set mapping result for screen 0:', mappingResult);
+  } catch (error) {
+    console.error('Error setting mapping for screen 0:', error);
+  }
+
+  // Example 10: Set Brightness for specific screen
+  try {
+    console.log('\n[Example 10: Set Brightness for Screen Index 0]');
+    const brightnessResult = await novastar.screenbrightness(80, { screenIndex: 0 });
+    console.log('Set brightness result for screen 0:', brightnessResult);
+  } catch (error) {
+    console.error('Error setting brightness for screen 0:', error);
   }
 
   console.log('\n--- Examples finished ---');
