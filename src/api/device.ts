@@ -40,20 +40,20 @@ export interface DeviceApi {
   setHue: (inputIdList: number[], hue: number) => Promise<void>;
   setEdid: (inputId: number, options: EdidOptions) => Promise<void>;
   // Device methods
-  setOutputAudio: (enable: boolean, source: number) => Promise<void>;
+  setOutputAudio: (enable: unknown, source: number) => Promise<void>;
   getAudioSettings: () => Promise<AudioSettings>;
-  controllerIdentify: (enable: boolean, color: RGBColor) => Promise<void>;
+  controllerIdentify: (enable: unknown, color: RGBColor) => Promise<void>;
   getDeviceBackupStatus: () => Promise<DeviceBackupStatus>;
-  primaryBackupVerify: (screenID: string, verifyType: number) => Promise<void>;
+  primaryBackupVerify: (screenID: string, verifyType: unknown) => Promise<void>;
   exportLog: () => Promise<unknown>;
   setSystemTime: (options: SystemTimeOptions) => Promise<void>;
-  setAutoTimeOnOff: (enable: boolean, timeSource: number) => Promise<void>;
+  setAutoTimeOnOff: (enable: unknown, timeSource: number) => Promise<void>;
   setTimeZone: (timezone: string) => Promise<void>;
   setControllerName: (customName: string) => Promise<void>;
   getSnmpStatus: () => Promise<{ state: boolean }>;
-  setSnmpOnOff: (state: boolean) => Promise<void>;
+  setSnmpOnOff: (state: unknown) => Promise<void>;
   getMultifunctionCardInfo: () => Promise<unknown>;
-  deviceIdentify: (enable: boolean) => Promise<void>;
+  deviceIdentify: (enable: unknown) => Promise<void>;
 }
 
 export function createDeviceApi(
@@ -313,7 +313,7 @@ export function createDeviceApi(
   };
 
   // Set Output Audio
-  const setOutputAudio = async (enable: boolean, source: number): Promise<void> => {
+  const setOutputAudio = async (enable: unknown, source: number): Promise<void> => {
     if (typeof enable !== "boolean") {
       throw new Error("enable must be a boolean");
     }
@@ -334,7 +334,7 @@ export function createDeviceApi(
   };
 
   // Controller Identify (color beacon)
-  const controllerIdentify = async (enable: boolean, color: RGBColor): Promise<void> => {
+  const controllerIdentify = async (enable: unknown, color: RGBColor): Promise<void> => {
     if (typeof enable !== "boolean") {
       throw new Error("enable must be a boolean");
     }
@@ -369,9 +369,9 @@ export function createDeviceApi(
   };
 
   // Primary/Backup Verify
-  const primaryBackupVerify = async (screenID: string, verifyType: number): Promise<void> => {
-    if (!verifyType) {
-      throw new Error("verifyType is required");
+  const primaryBackupVerify = async (screenID: string, verifyType: unknown): Promise<void> => {
+    if (typeof verifyType !== "number" || !Number.isInteger(verifyType) || verifyType <= 0) {
+      throw new Error("verifyType is required and must be a positive integer");
     }
 
     const url = `${baseurl}/api/v1/device/backup/verify`;
@@ -404,7 +404,7 @@ export function createDeviceApi(
   };
 
   // Set Auto Time On/Off
-  const setAutoTimeOnOff = async (enable: boolean, timeSource: number): Promise<void> => {
+  const setAutoTimeOnOff = async (enable: unknown, timeSource: number): Promise<void> => {
     if (typeof enable !== "boolean") {
       throw new Error("enable must be a boolean");
     }
@@ -450,7 +450,10 @@ export function createDeviceApi(
   };
 
   // Set SNMP On/Off
-  const setSnmpOnOff = async (state: boolean): Promise<void> => {
+  const setSnmpOnOff = async (state: unknown): Promise<void> => {
+    if (typeof state !== "boolean") {
+      throw new Error("state must be a boolean");
+    }
     const url = `${baseurl}/api/v1/device/snmpstate`;
     const payload = { state };
     const response = await ky.put(url, { json: payload });
@@ -467,7 +470,7 @@ export function createDeviceApi(
   };
 
   // Device Identify
-  const deviceIdentify = async (enable: boolean): Promise<void> => {
+  const deviceIdentify = async (enable: unknown): Promise<void> => {
     if (typeof enable !== "boolean") {
       throw new Error("enable must be a boolean");
     }

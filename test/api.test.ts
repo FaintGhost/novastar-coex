@@ -502,9 +502,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject non-boolean enable", async () => {
-        await expect(api.controllerIdentify("true" as unknown as boolean, { r: 255, g: 0, b: 0 })).rejects.toThrow(
-          "enable must be a boolean"
-        );
+        await expect(api.controllerIdentify("true", { r: 255, g: 0, b: 0 })).rejects.toThrow("enable must be a boolean");
       });
 
       it("should reject invalid color values", async () => {
@@ -527,9 +525,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject missing verifyType", async () => {
-        await expect(api.primaryBackupVerify("screen1", 0 as unknown as number)).rejects.toThrow(
-          "verifyType is required"
-        );
+        await expect(api.primaryBackupVerify("screen1", 0)).rejects.toThrow("verifyType is required");
       });
     });
 
@@ -576,9 +572,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject non-boolean enable", async () => {
-        await expect(api.setAutoTimeOnOff("true" as unknown as boolean, 0)).rejects.toThrow(
-          "enable must be a boolean"
-        );
+        await expect(api.setAutoTimeOnOff("true", 0)).rejects.toThrow("enable must be a boolean");
       });
 
       it("should reject invalid time source", async () => {
@@ -629,7 +623,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject non-boolean enable", async () => {
-        await expect(api.deviceIdentify("true" as unknown as boolean)).rejects.toThrow("enable must be a boolean");
+        await expect(api.deviceIdentify("true")).rejects.toThrow("enable must be a boolean");
       });
     });
   });
@@ -767,7 +761,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject invalid type", async () => {
-        await expect(api.setBrightnessLimitValue(["screen1"], 1 as unknown as 2)).rejects.toThrow("type must be 2 or 3");
+        await expect(api.setBrightnessLimitValue(["screen1"], 1)).rejects.toThrow("type must be 2 or 3");
       });
     });
 
@@ -862,7 +856,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject invalid bit depth", async () => {
-        await expect(api.setOutputBitDepth(["screen1"], 5 as unknown as 0)).rejects.toThrow("bitDepth must be one of");
+        await expect(api.setOutputBitDepth(["screen1"], 5)).rejects.toThrow("bitDepth must be one of");
       });
     });
 
@@ -933,9 +927,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject non-boolean enable", async () => {
-        await expect(api.setThermalCompensationOnOff([1, 2], "true" as unknown as boolean)).rejects.toThrow(
-          "enable must be a boolean"
-        );
+        await expect(api.setThermalCompensationOnOff([1, 2], "true")).rejects.toThrow("enable must be a boolean");
       });
     });
 
@@ -1067,7 +1059,9 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject invalid changeType", async () => {
-        await expect(api.setCabinetRgbwBrightness([1, 2], 5 as unknown as 1, 0.5)).rejects.toThrow("changeType must be 1 (W), 2 (R), 3 (G), or 4 (B)");
+        await expect(api.setCabinetRgbwBrightness([1, 2], 5, 0.5)).rejects.toThrow(
+          "changeType must be 1 (W), 2 (R), 3 (G), or 4 (B)"
+        );
       });
 
       it("should reject value out of range", async () => {

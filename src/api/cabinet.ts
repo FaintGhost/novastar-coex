@@ -8,7 +8,7 @@ export interface CabinetApi {
     sourceType: number,
     prestoreImageType: number,
   ) => Promise<void>;
-  setThermalCompensationOnOff: (idList: number[], enable: boolean) => Promise<void>;
+  setThermalCompensationOnOff: (idList: number[], enable: unknown) => Promise<void>;
   setThermalCompensationIntensity: (idList: number[], amount: number) => Promise<void>;
   setThermalCompensationMode: (idList: number[], mode: number) => Promise<void>;
   setCabinetRgbBrightness: (idList: number[], r: number, g: number, b: number) => Promise<void>;
@@ -23,7 +23,7 @@ export interface CabinetApi {
   moveCabinet: (screenID: string, canvases: CanvasConfig[]) => Promise<void>;
   setCabinetRgbwBrightness: (
     idList: number[],
-    changeType: 1 | 2 | 3 | 4,
+    changeType: unknown,
     value: number,
   ) => Promise<void>;
 }
@@ -58,7 +58,7 @@ export function createCabinetApi(
   };
 
   // Set Thermal Compensation On/Off
-  const setThermalCompensationOnOff = async (idList: number[], enable: boolean): Promise<void> => {
+  const setThermalCompensationOnOff = async (idList: number[], enable: unknown): Promise<void> => {
     if (!Array.isArray(idList) || idList.length === 0) {
       throw new Error("idList must be a non-empty array");
     }
@@ -250,14 +250,14 @@ export function createCabinetApi(
   // Set Cabinet RGBW Brightness
   const setCabinetRgbwBrightness = async (
     idList: number[],
-    changeType: 1 | 2 | 3 | 4,
+    changeType: unknown,
     value: number,
   ): Promise<void> => {
     if (!Array.isArray(idList) || idList.length === 0) {
       throw new Error("idList must be a non-empty array");
     }
     const validChangeTypes = [1, 2, 3, 4];
-    if (!validChangeTypes.includes(changeType)) {
+    if (typeof changeType !== "number" || !validChangeTypes.includes(changeType)) {
       throw new Error("changeType must be 1 (W), 2 (R), 3 (G), or 4 (B)");
     }
     if (typeof value !== "number" || value < 0 || value > 1) {

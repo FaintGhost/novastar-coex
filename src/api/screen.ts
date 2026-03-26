@@ -29,7 +29,7 @@ export interface ScreenApi {
   setBrightnessLimitOnOff: (state: boolean, screenIdList: string[]) => Promise<void>;
   setBrightnessLimitValue: (
     screenIdList: string[],
-    type: 2 | 3,
+    type: unknown,
     nit?: number,
     ratio?: number,
   ) => Promise<void>;
@@ -43,7 +43,7 @@ export interface ScreenApi {
   // Color Correction
   setColorCorrectionOnOff: (enable: boolean, screenIdList: string[]) => Promise<void>;
   setColorCorrectionBlackWhite: (data: RGBColor[]) => Promise<void>;
-  setColorCorrectionOtherColors: (data: Array<{ hue: number; sat: number; value: number }>) => Promise<void>;
+  setColorCorrectionOtherColors: (data: unknown[][]) => Promise<void>;
 
   // Schedule
   getAllScheduleInfo: () => Promise<unknown>;
@@ -56,10 +56,10 @@ export interface ScreenApi {
   // Output
   getScreenOutputData: () => Promise<unknown>;
   setMultimodeByScreens: (screenIdList: string[], modeId: number) => Promise<void>;
-  setOutputBitDepth: (screenIdList: string[], bitDepth: 0 | 1 | 2 | 255) => Promise<void>;
-  outputSyncSourceSwitching: (enable: boolean, sourceType?: number) => Promise<void>;
-  enable3DEmitter: (enable: boolean, screenIdList: string[]) => Promise<void>;
-  enable3D: (enable: boolean, screenIdList: string[]) => Promise<void>;
+  setOutputBitDepth: (screenIdList: string[], bitDepth: unknown) => Promise<void>;
+  outputSyncSourceSwitching: (enable: unknown, sourceType?: number) => Promise<void>;
+  enable3DEmitter: (enable: unknown, screenIdList: string[]) => Promise<void>;
+  enable3D: (enable: unknown, screenIdList: string[]) => Promise<void>;
   setMapping: (canvasId: number, mappingData: CanvasConfig) => Promise<void>;
   getScreenList: () => Promise<unknown>;
 }
@@ -218,10 +218,13 @@ export function createScreenApi(
 
     setBrightnessLimitValue: async (
       screenIdList: string[],
-      type: 2 | 3,
+      type: unknown,
       nit?: number,
       ratio?: number,
     ) => {
+      if (type !== 2 && type !== 3) {
+        throw new Error("type must be 2 or 3");
+      }
       if (type !== 2 && type !== 3) {
         throw new Error("type must be 2 or 3");
       }
@@ -382,9 +385,9 @@ export function createScreenApi(
       await responseparser(data);
     },
 
-    setOutputBitDepth: async (screenIdList: string[], bitDepth: 0 | 1 | 2 | 255) => {
+    setOutputBitDepth: async (screenIdList: string[], bitDepth: unknown) => {
       const validBitDepths = [0, 1, 2, 255];
-      if (!validBitDepths.includes(bitDepth)) {
+      if (typeof bitDepth !== "number" || !validBitDepths.includes(bitDepth)) {
         throw new Error(`bitDepth must be one of: ${validBitDepths.join(", ")}`);
       }
       const data = await ky
@@ -395,7 +398,10 @@ export function createScreenApi(
       await responseparser(data);
     },
 
-    outputSyncSourceSwitching: async (enable: boolean, sourceType?: number) => {
+    outputSyncSourceSwitching: async (enable: unknown, sourceType?: number) => {
+      if (typeof enable !== "boolean") {
+        throw new Error("enable must be a boolean");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/sync/source`, {
           json: { enable, sourceType },
@@ -404,7 +410,10 @@ export function createScreenApi(
       await responseparser(data);
     },
 
-    enable3DEmitter: async (enable: boolean, screenIdList: string[]) => {
+    enable3DEmitter: async (enable: unknown, screenIdList: string[]) => {
+      if (typeof enable !== "boolean") {
+        throw new Error("enable must be a boolean");
+      }
       if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
         throw new Error("screenIdList must be a non-empty array");
       }
@@ -416,7 +425,7 @@ export function createScreenApi(
       await responseparser(data);
     },
 
-    enable3D: async (enable: boolean, screenIdList: string[]) => {
+    enable3D: async (enable: unknown, screenIdList: string[]) => {
       if (typeof enable !== "boolean") {
         throw new Error("enable must be a boolean");
       }
