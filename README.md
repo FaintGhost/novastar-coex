@@ -1,10 +1,14 @@
-# novastar-coex
+# @novastar-dev/coex
 
-A modern Javascript library for controlling NovaStar COEX video wall processors, specifically targeting the **current (v1.5+) API**.
+A TypeScript library for controlling NovaStar COEX video wall processors via HTTP API, targeting **COEX firmware v1.5+**.
 
-**Note:** This is a fork of the original `novastar-coex` library. This version has been updated to support the changes introduced in COEX firmware v1.5.0 and **removes support for the legacy API (v1.0-v1.2.3)** to simplify maintenance and ensure compatibility with modern devices.
+## Features
 
-This library provides a promise-based interface for interacting with COEX devices like the MX40 Pro, MX2000 Pro, and CX40 Pro.
+- **Full TypeScript support** with strict type checking
+- **Promise-based API** with async/await
+- **Comprehensive input validation** using type guards
+- **142 tests** with 91%+ coverage
+- **MSW 2.x** for API mocking in tests
 
 ## Installation
 
@@ -12,301 +16,149 @@ This library provides a promise-based interface for interacting with COEX device
 npm i @novastar-dev/coex
 ```
 
-## Usage
+## Quick Start
 
-### Connecting to a Processor
+```typescript
+import { COEX } from "@novastar-dev/coex";
 
-```javascript
-const Novastar = require("novastar-coex");
+const device = new COEX("192.168.1.100", 8001);
 
-// Replace with your device's IP and API port (default is 8001)
-const novastar = new Novastar("192.168.0.10", 8001);
-
-// All methods return Promises, so use async/await or .then()/.catch()
-async function getDeviceSources() {
+async function main() {
   try {
-    const sources = await novastar.sources();
-    console.log("Available Sources:", sources);
+    // Get available input sources
+    const sources = await device.apiInstance.sources();
+    console.log("Sources:", sources);
+
+    // Set brightness
+    await device.brightness(80);
+
+    // Apply a preset
+    await device.apiInstance.applyPreset("screen1", 1);
   } catch (error) {
-    console.error("Failed to get sources:", error);
+    console.error("Error:", error);
   }
 }
 
-getDeviceSources();
+main();
 ```
 
-## API Methods & Examples
+## API Overview
 
-All methods return Promises. Use `async/await` within an `async` function for cleaner code.
+### High-Level Methods (on `COEX` class)
 
-### Get Presets (`getPreset`)
+| Method | Description |
+|--------|-------------|
+| `blackout()` | Set display to blackout mode |
+| `normal()` | Set display to normal mode |
+| `freeze()` | Freeze the current frame |
+| `brightness(value)` | Set screen brightness (0-100) |
+| `input(name)` | Switch input source by name |
+| `summary()` | Get cabinet count |
 
-Retrieves the list of presets stored on the device.
+### Screen API
 
-```javascript
-async function listPresets() {
-  try {
-    const presets = await novastar.getPreset();
-    console.log("Presets:", presets);
-    // Example result item:
-    // {
-    //   sequenceNumber: 1,
-    //   name: '预设方案1',
-    //   state: true, // Indicates if this preset is currently active
-    //   sourceData: true,
-    //   processingData: false,
-    //   outputData: false,
-    //   screenData: true,
-    //   effectSwitch: 1,
-    //   presetUUID: '{dc80bb97-f528-42f5-a2c8-b004b7387890}'
-    // }
-  } catch (error) {
-    console.error("Failed to get presets:", error);
-  }
-}
-listPresets();
-```
+| Method | Description |
+|--------|-------------|
+| `screen()` | Get screen information |
+| `getScreenProperties()` | Get screen properties |
+| `getCabinetCount()` | Get cabinet count |
+| `displaymode(value)` | Set display mode (0=normal, 1=blackout, 2=freeze) |
+| `brightness(value, screenIds?)` | Set brightness |
+| `colortemperature(value, screenIds?)` | Set color temperature (1000-12000K) |
+| `gamma(value, screenIds?)` | Set gamma (1.0-4.0) |
+| `getDisplayState()` | Get display state |
+| `getDisplayParams()` | Get display parameters |
+| `switchLayerSource(screenId, layers)` | Switch layer source |
+| `setMapping(canvasId, mappingData)` | Set canvas mapping |
+| `getScreenList()` | Get all screens |
 
-### Apply Preset (`applyPreset`)
+### Preset API
 
-Applies a preset by its name or sequence number. If `screenID` is omitted, it attempts to apply to the first available screen.
+| Method | Description |
+|--------|-------------|
+| `getPreset()` | Get all presets |
+| `applyPreset(screenID, sequenceNumber)` | Apply a preset |
+| `modifyPreset(screenID, options)` | Modify preset settings |
 
-```javascript
-// preset: string (name) or number (sequenceNumber)
-// screenID: string (optional) - Target screen ID
+### Device API
 
-async function applyMyPreset(presetIdentifier) {
-  try {
-    const result = await novastar.applyPreset(presetIdentifier);
-    console.log(`Successfully applied preset '${presetIdentifier}':`, result);
-  } catch (error) {
-    console.error(`Failed to apply preset '${presetIdentifier}':`, error);
-  }
-}
+| Method | Description |
+|--------|-------------|
+| `sources()` | Get available input sources |
+| `monitor()` | Get real-time monitoring info |
+| `cabinet()` | Get cabinet information |
+| `setHdrMode(id, hdrMode)` | Set HDR mode |
+| `setInternalSource(options)` | Set internal source |
+| `setSendingCardTestPattern(mode, params?)` | Set test pattern |
+| `setShadow(inputIdList, type, shadow)` | Adjust shadow |
+| `setHighlight(inputIdList, type, value)` | Adjust highlight |
+| `setSaturation(inputIdList, value)` | Set saturation |
+| `setContrast(inputIdList, value)` | Set contrast |
+| `setHue(inputIdList, value)` | Set hue |
+| `setEdid(inputId, options)` | Configure EDID |
+| `setOutputAudio(enable, source)` | Set output audio |
+| `getAudioSettings()` | Get audio settings |
+| `controllerIdentify(enable, color)` | Identify controller |
+| `getDeviceBackupStatus()` | Get backup status |
+| `exportLog()` | Export device logs |
+| `setSystemTime(options)` | Set system time |
+| `setTimeZone(timezone)` | Set timezone |
+| `setControllerName(name)` | Set controller name |
+| `getSnmpStatus()` | Get SNMP status |
+| `setSnmpOnOff(state)` | Enable/disable SNMP |
+| `deviceIdentify(enable)` | Identify device |
 
-// Apply by name
-applyMyPreset("预设方案1");
+### Cabinet API
 
-// Apply by sequence number (assuming preset with sequenceNumber 2 exists)
-// applyMyPreset(2);
-```
-
-### Get Display Parameters (`getDisplayParams`)
-
-Retrieves detailed parameters for all connected screens (brightness, color temperature, gamma, etc.).
-
-```javascript
-async function checkDisplayParams() {
-  try {
-    const params = await novastar.getDisplayParams();
-    console.log("Display Parameters:", params);
-    // Example result item:
-    // {
-    //   screenId: '...',
-    //   brightness: 0.8, // Value between 0.0 and 1.0
-    //   colorTemperature: 6500,
-    //   gamma: 2.2,
-    //   hdrMode: 0,
-    //   enable3DLut: false
-    //   // ... other parameters
-    // }
-  } catch (error) {
-    console.error("Failed to get display parameters:", error);
-  }
-}
-checkDisplayParams();
-```
-
-### Set Color Temperature (`colortemperature`)
-
-Sets the color temperature for specific screens or all screens.
-
-```javascript
-// value: number (1700-15000)
-// screenids: string or array of strings (optional) - Defaults to all screens if omitted
-
-async function setScreenColorTemp(temp, screenId = null) {
-  try {
-    const result = await novastar.colortemperature(temp, screenId);
-    console.log(`Set color temperature to ${temp}K for ${screenId || "all screens"}:`, result);
-  } catch (error) {
-    console.error(`Failed to set color temperature for ${screenId || "all screens"}:`, error);
-  }
-}
-
-// Set all screens to 6500K
-setScreenColorTemp(6500);
-
-// Set a specific screen (replace 'your_screen_id' with an actual ID)
-// setScreenColorTemp(5000, 'your_screen_id');
-```
-
-### Set Gamma (`gamma`)
-
-Sets the gamma value for specific screens or all screens.
-
-```javascript
-// value: number (1.0 - 4.0)
-// screenids: string or array of strings (optional) - Defaults to all screens if omitted
-
-async function setScreenGamma(gammaValue, screenId = null) {
-  try {
-    const result = await novastar.gamma(gammaValue, screenId);
-    console.log(`Set gamma to ${gammaValue} for ${screenId || "all screens"}:`, result);
-  } catch (error) {
-    console.error(`Failed to set gamma for ${screenId || "all screens"}:`, error);
-  }
-}
-
-// Set all screens to gamma 2.2
-setScreenGamma(2.2);
-
-// Set specific screens (replace with actual IDs)
-// setScreenGamma(2.4, ['screen_id_1', 'screen_id_2']);
-```
-
-### Set Brightness (`brightness`)
-
-Sets the overall brightness. The library internally fetches screen IDs and applies the brightness to all of them via the `screenbrightness` API call.
-
-```javascript
-// brightnessValue: number (0-100 or 0.0-1.0) - Library handles conversion if needed.
-
-async function setGlobalBrightness(level) {
-  try {
-    const result = await novastar.brightness(level);
-    console.log(`Set brightness to ${level}:`, result);
-  } catch (error) {
-    console.error(`Failed to set brightness:`, error);
-  }
-}
-
-setGlobalBrightness(75); // Set brightness to 75%
-```
-
-### Set Display Mode (`displaymode`, `normal`, `blackout`, `freeze`)
-
-Changes the output display mode.
-
-```javascript
-// mode: 0 (Normal), 1 (Blackout), 2 (Freeze)
-
-async function setDisplayOutputMode(mode) {
-  try {
-    let result;
-    let modeName;
-    switch (mode) {
-      case 0:
-        result = await novastar.normal(); // Alias for displaymode(0)
-        modeName = "Normal";
-        break;
-      case 1:
-        result = await novastar.blackout(); // Alias for displaymode(1)
-        modeName = "Blackout";
-        break;
-      case 2:
-        result = await novastar.freeze(); // Alias for displaymode(2)
-        modeName = "Freeze";
-        break;
-      default:
-        console.error("Invalid display mode:", mode);
-        return;
-    }
-    // Alternatively, call directly: result = await novastar.displaymode(mode);
-    console.log(`Set display mode to ${modeName}:`, result);
-  } catch (error) {
-    console.error(`Failed to set display mode to ${mode}:`, error);
-  }
-}
-
-setDisplayOutputMode(1); // Set to Blackout
-// setDisplayOutputMode(0); // Set to Normal
-```
-
-### Set Input Source (`input`)
-
-Changes the active input source. **Note:** This might only work correctly when the processor is in "Send Only" mode (see Known Issues).
-
-```javascript
-// inputIdentifier: string (name, e.g., "HDMI 1") or number (groupId)
-
-async function setInput(inputNameOrId) {
-  try {
-    const result = await novastar.input(inputNameOrId);
-    console.log(`Set input to '${inputNameOrId}':`, result);
-  } catch (error) {
-    console.error(`Failed to set input to '${inputNameOrId}':`, error);
-  }
-}
-
-setInput("HDMI 1"); // Set input using its name
-// setInput(40); // Set input using its group ID (example)
-```
-
-### Get Sources (`sources`)
-
-Retrieves a list of available input sources and their properties.
-
-```javascript
-async function listSources() {
-  try {
-    const sourceList = await novastar.sources();
-    console.log("Available Input Sources:", sourceList);
-  } catch (error) {
-    console.error("Failed to get sources:", error);
-  }
-}
-listSources();
-```
-
-### Enable/Disable 3D LUT (`enable3DLut`)
-
-Enables or disables the 3D LUT processing for specific screens or all screens.
-
-```javascript
-// enable: boolean (true to enable, false to disable)
-// screenids: string or array of strings (optional) - Defaults to all screens
-
-async function set3DLutState(isEnabled, screenId = null) {
-  try {
-    const result = await novastar.enable3DLut(isEnabled, screenId);
-    const state = isEnabled ? "enabled" : "disabled";
-    console.log(`Set 3D LUT to ${state} for ${screenId || "all screens"}:`, result);
-  } catch (error) {
-    console.error(`Failed to set 3D LUT state for ${screenId || "all screens"}:`, error);
-  }
-}
-
-// Enable 3D LUT for all screens
-set3DLutState(true);
-
-// Disable 3D LUT for a specific screen
-// set3DLutState(false, 'your_screen_id');
-```
+| Method | Description |
+|--------|-------------|
+| `setNoDataSignal(idList, sourceType, imageType)` | Set no-data signal behavior |
+| `setThermalCompensationOnOff(idList, enable)` | Toggle thermal compensation |
+| `setThermalCompensationIntensity(idList, amount)` | Set compensation intensity |
+| `setCabinetRgbBrightness(idList, r, g, b)` | Set RGB brightness |
+| `setCabinetBrightness(idList, ratio, nit?)` | Set brightness |
+| `adjustCabinetColorTemperature(idList, value)` | Adjust color temperature |
+| `setReceivingCardTestPattern(idList, mode)` | Set test pattern |
+| `enableCabinetMapping(idList, enable)` | Enable/disable mapping |
+| `moveCabinet(screenID, canvases)` | Move cabinet |
 
 ## Error Handling
 
-Methods return Promises that reject upon API errors or network issues. Always wrap calls in `try...catch` blocks when using `async/await`, or use `.catch()` with promise chains.
+All methods throw typed errors with descriptive messages:
 
-```javascript
-async function safeApiCall() {
-  try {
-    const data = await novastar.someMethod();
-    // Process data
-  } catch (error) {
-    console.error("API call failed:", error);
-    // Handle specific errors, e.g., device locked
-    if (error.error === "device locked") {
-      console.warn("Device might be locked by VMP software.");
-    }
+```typescript
+try {
+  await device.brightness(150); // Invalid: 0-100 range
+} catch (error) {
+  if (error instanceof Error) {
+    console.log(error.message); // "brightness must be between 0 and 100"
   }
 }
 ```
 
-## Known Issues
+## TypeScript
 
-- **VMP Lock:** If you are running the NovaStar VMP software simultaneously, the processor might be locked, preventing API commands from other devices/IPs. Workaround: Close VMP or run your script from the same computer running VMP.
+The library exports all relevant types:
+
+```typescript
+import {
+  COEX,
+  createCoexApi,
+  type Screen,
+  type Cabinet,
+  type Preset,
+  type InputSource,
+  type ApiResponse,
+} from "@novastar-dev/coex";
+```
+
+## Testing
+
+```bash
+npm test        # Run tests
+npm run test:coverage  # Run with coverage
+```
 
 ## License
 
-MIT License (Refer to the LICENSE file)
+MIT
