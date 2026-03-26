@@ -2,31 +2,52 @@
   "name": "@novastar-dev/coex",
   "version": "2.0.3",
   "description": "A javascript library for control of NovaStar COEX video wall processors",
-  "publishConfig": {
-    "access": "public"
+  "keywords": [
+    "coex",
+    "led",
+    "novastar",
+    "video",
+    "wall"
+  ],
+  "homepage": "https://github.com/FaintGhost/novastar-coex",
+  "bugs": {
+    "url": "https://github.com/FaintGhost/novastar-coex/issues"
   },
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
-  },
+  "license": "MIT",
+  "author": "FaintGhost",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FaintGhost/novastar-coex.git"
   },
-  "keywords": [
-    "video",
-    "wall",
-    "led",
-    "coex",
-    "novastar"
-  ],
-  "author": "FaintGhost",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/FaintGhost/novastar-coex/issues"
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "homepage": "https://github.com/FaintGhost/novastar-coex",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
   "dependencies": {
-    "lodash": "^4.17.21"
+    "ky": "^1.14.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.1",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "oxlint-tsgolint": "^0.17.4",
+    "tsgolint": "^0.0.1",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.1"
   }
 }

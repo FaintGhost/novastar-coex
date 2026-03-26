@@ -17,18 +17,18 @@ npm i @novastar-dev/coex
 ### Connecting to a Processor
 
 ```javascript
-const Novastar = require('novastar-coex');
+const Novastar = require("novastar-coex");
 
 // Replace with your device's IP and API port (default is 8001)
-const novastar = new Novastar('192.168.0.10', 8001);
+const novastar = new Novastar("192.168.0.10", 8001);
 
 // All methods return Promises, so use async/await or .then()/.catch()
 async function getDeviceSources() {
   try {
     const sources = await novastar.sources();
-    console.log('Available Sources:', sources);
+    console.log("Available Sources:", sources);
   } catch (error) {
-    console.error('Failed to get sources:', error);
+    console.error("Failed to get sources:", error);
   }
 }
 
@@ -47,7 +47,7 @@ Retrieves the list of presets stored on the device.
 async function listPresets() {
   try {
     const presets = await novastar.getPreset();
-    console.log('Presets:', presets);
+    console.log("Presets:", presets);
     // Example result item:
     // {
     //   sequenceNumber: 1,
@@ -61,7 +61,7 @@ async function listPresets() {
     //   presetUUID: '{dc80bb97-f528-42f5-a2c8-b004b7387890}'
     // }
   } catch (error) {
-    console.error('Failed to get presets:', error);
+    console.error("Failed to get presets:", error);
   }
 }
 listPresets();
@@ -85,7 +85,7 @@ async function applyMyPreset(presetIdentifier) {
 }
 
 // Apply by name
-applyMyPreset('预设方案1');
+applyMyPreset("预设方案1");
 
 // Apply by sequence number (assuming preset with sequenceNumber 2 exists)
 // applyMyPreset(2);
@@ -99,7 +99,7 @@ Retrieves detailed parameters for all connected screens (brightness, color tempe
 async function checkDisplayParams() {
   try {
     const params = await novastar.getDisplayParams();
-    console.log('Display Parameters:', params);
+    console.log("Display Parameters:", params);
     // Example result item:
     // {
     //   screenId: '...',
@@ -111,7 +111,7 @@ async function checkDisplayParams() {
     //   // ... other parameters
     // }
   } catch (error) {
-    console.error('Failed to get display parameters:', error);
+    console.error("Failed to get display parameters:", error);
   }
 }
 checkDisplayParams();
@@ -128,9 +128,9 @@ Sets the color temperature for specific screens or all screens.
 async function setScreenColorTemp(temp, screenId = null) {
   try {
     const result = await novastar.colortemperature(temp, screenId);
-    console.log(`Set color temperature to ${temp}K for ${screenId || 'all screens'}:`, result);
+    console.log(`Set color temperature to ${temp}K for ${screenId || "all screens"}:`, result);
   } catch (error) {
-    console.error(`Failed to set color temperature for ${screenId || 'all screens'}:`, error);
+    console.error(`Failed to set color temperature for ${screenId || "all screens"}:`, error);
   }
 }
 
@@ -152,9 +152,9 @@ Sets the gamma value for specific screens or all screens.
 async function setScreenGamma(gammaValue, screenId = null) {
   try {
     const result = await novastar.gamma(gammaValue, screenId);
-    console.log(`Set gamma to ${gammaValue} for ${screenId || 'all screens'}:`, result);
+    console.log(`Set gamma to ${gammaValue} for ${screenId || "all screens"}:`, result);
   } catch (error) {
-    console.error(`Failed to set gamma for ${screenId || 'all screens'}:`, error);
+    console.error(`Failed to set gamma for ${screenId || "all screens"}:`, error);
   }
 }
 
@@ -198,18 +198,18 @@ async function setDisplayOutputMode(mode) {
     switch (mode) {
       case 0:
         result = await novastar.normal(); // Alias for displaymode(0)
-        modeName = 'Normal';
+        modeName = "Normal";
         break;
       case 1:
         result = await novastar.blackout(); // Alias for displaymode(1)
-        modeName = 'Blackout';
+        modeName = "Blackout";
         break;
       case 2:
         result = await novastar.freeze(); // Alias for displaymode(2)
-        modeName = 'Freeze';
+        modeName = "Freeze";
         break;
       default:
-        console.error('Invalid display mode:', mode);
+        console.error("Invalid display mode:", mode);
         return;
     }
     // Alternatively, call directly: result = await novastar.displaymode(mode);
@@ -239,7 +239,7 @@ async function setInput(inputNameOrId) {
   }
 }
 
-setInput('HDMI 1'); // Set input using its name
+setInput("HDMI 1"); // Set input using its name
 // setInput(40); // Set input using its group ID (example)
 ```
 
@@ -251,9 +251,9 @@ Retrieves a list of available input sources and their properties.
 async function listSources() {
   try {
     const sourceList = await novastar.sources();
-    console.log('Available Input Sources:', sourceList);
+    console.log("Available Input Sources:", sourceList);
   } catch (error) {
-    console.error('Failed to get sources:', error);
+    console.error("Failed to get sources:", error);
   }
 }
 listSources();
@@ -270,10 +270,10 @@ Enables or disables the 3D LUT processing for specific screens or all screens.
 async function set3DLutState(isEnabled, screenId = null) {
   try {
     const result = await novastar.enable3DLut(isEnabled, screenId);
-    const state = isEnabled ? 'enabled' : 'disabled';
-    console.log(`Set 3D LUT to ${state} for ${screenId || 'all screens'}:`, result);
+    const state = isEnabled ? "enabled" : "disabled";
+    console.log(`Set 3D LUT to ${state} for ${screenId || "all screens"}:`, result);
   } catch (error) {
-    console.error(`Failed to set 3D LUT state for ${screenId || 'all screens'}:`, error);
+    console.error(`Failed to set 3D LUT state for ${screenId || "all screens"}:`, error);
   }
 }
 
@@ -294,10 +294,10 @@ async function safeApiCall() {
     const data = await novastar.someMethod();
     // Process data
   } catch (error) {
-    console.error('API call failed:', error);
+    console.error("API call failed:", error);
     // Handle specific errors, e.g., device locked
-    if (error.error === 'device locked') {
-      console.warn('Device might be locked by VMP software.');
+    if (error.error === "device locked") {
+      console.warn("Device might be locked by VMP software.");
     }
   }
 }
@@ -305,9 +305,8 @@ async function safeApiCall() {
 
 ## Known Issues
 
-*   **VMP Lock:** If you are running the NovaStar VMP software simultaneously, the processor might be locked, preventing API commands from other devices/IPs. Workaround: Close VMP or run your script from the same computer running VMP.
+- **VMP Lock:** If you are running the NovaStar VMP software simultaneously, the processor might be locked, preventing API commands from other devices/IPs. Workaround: Close VMP or run your script from the same computer running VMP.
 
 ## License
 
 MIT License (Refer to the LICENSE file)
-

@@ -1,0 +1,102 @@
+# COEX
+
+## Docs
+- Contents [API Instructions](https://api.coex.novastar.tech/en/doc-7530630.md): 
+- Contents [Error Codes](https://api.coex.novastar.tech/en/doc-7530631.md): 
+
+## API Docs
+- Contents > General API [Retrieve Screen Information](https://api.coex.novastar.tech/en/api-363921203.md): 
+- Contents > General API [Set Screen Brightness](https://api.coex.novastar.tech/en/api-363921204.md): :::tip
+- Contents > General API [Set Screen Gamma](https://api.coex.novastar.tech/en/api-363921205.md): 
+- Contents > General API [Set Blackout/Freeze Screen](https://api.coex.novastar.tech/en/api-363921206.md): 
+- Contents > General API [Retrieve Preset Information](https://api.coex.novastar.tech/en/api-363921207.md): :::tip
+- Contents > General API [Apply Preset](https://api.coex.novastar.tech/en/api-363921208.md): 
+- Contents > General API [Retrieve All Cabinet Information](https://api.coex.novastar.tech/en/api-363921209.md): 
+- Contents > General API [Enable Cabinet Mapping](https://api.coex.novastar.tech/en/api-363921210.md): 
+- Contents > General API [Adjust Cabinet Color Temperature](https://api.coex.novastar.tech/en/api-363921211.md): 
+- Contents > General API [Switch Source for Layer](https://api.coex.novastar.tech/en/api-363921212.md): :::tip
+- Contents > General API [Configure EDID](https://api.coex.novastar.tech/en/api-363921213.md): 
+- Contents > General API [Retrieve Real-Time Monitoring Information](https://api.coex.novastar.tech/en/api-363921214.md): 
+- Contents > Input > Internal sources [Set Internal Source Information](https://api.coex.novastar.tech/en/api-363921215.md): :::tip
+- Contents > Input > Internal sources [Set Sending Card Test Pattern](https://api.coex.novastar.tech/en/api-363921216.md): 
+- Contents > Input > Retrieve Input Information [Retrieve Input Source Info](https://api.coex.novastar.tech/en/api-363921217.md): 
+- Contents > Input > Retrieve Input Information [Retrieve Input Data](https://api.coex.novastar.tech/en/api-363921218.md): 
+- Contents > Input > Color Adjustment [Set Red Shadow](https://api.coex.novastar.tech/en/api-363921219.md): 
+- Contents > Input > Color Adjustment [Set Green Shadow ](https://api.coex.novastar.tech/en/api-363921220.md): 
+- Contents > Input > Color Adjustment [Set Blue Shadow](https://api.coex.novastar.tech/en/api-363921221.md): 
+- Contents > Input > Color Adjustment [Set Red Highlight](https://api.coex.novastar.tech/en/api-363921222.md): 
+- Contents > Input > Color Adjustment [Set Green Highlight ](https://api.coex.novastar.tech/en/api-363921223.md): 
+- Contents > Input > Color Adjustment [Reset Color Adjustment](https://api.coex.novastar.tech/en/api-363921224.md): 
+- Contents > Input > Color Adjustment [Set Blue Highlight](https://api.coex.novastar.tech/en/api-363921225.md): 
+- Contents > Input > Color Adjustment [Set Saturation](https://api.coex.novastar.tech/en/api-363921226.md): 
+- Contents > Input > Color Adjustment [Set Contrast](https://api.coex.novastar.tech/en/api-363921227.md): 
+- Contents > Input > Color Adjustment [Set Black Level](https://api.coex.novastar.tech/en/api-363921228.md): 
+- Contents > Input > Color Adjustment [Adjust Hue](https://api.coex.novastar.tech/en/api-363921229.md): 
+- Contents > Input > EDID [Set EDID](https://api.coex.novastar.tech/en/api-363921230.md): 
+- Contents > Input > Set HDR Mode [Set HDR Mode](https://api.coex.novastar.tech/en/api-363921231.md): 
+- Contents > Screen > Image > Color Gamut [Set Custom Gamut on a Screen-Basis](https://api.coex.novastar.tech/en/api-363921243.md): 
+- Contents > Screen > Image > Color Gamut [Switch Color Gamut](https://api.coex.novastar.tech/en/api-363921244.md): 
+- Contents > Screen > Image [Set Screen Color Temperature](https://api.coex.novastar.tech/en/api-363921235.md): 
+- Contents > Screen > Image [Retrieve Screen Display Effect Parameters](https://api.coex.novastar.tech/en/api-363921236.md): 
+- Contents > Screen > Image [Set Brightness Limit On/Off](https://api.coex.novastar.tech/en/api-363921237.md): :::tip
+- Contents > Screen > Image [Set Brightness Limit Value](https://api.coex.novastar.tech/en/api-363921238.md): :::tip
+- Contents > Screen > Image [Set Custom Gamma for the Screen](https://api.coex.novastar.tech/en/api-363921239.md): 
+- Contents > Screen > Image [Set Screen Color Temperature](https://api.coex.novastar.tech/en/api-363921240.md): 
+- Contents > Screen > Image [Set Screen Brightness](https://api.coex.novastar.tech/en/api-363921241.md): :::tip
+- Contents > Screen > Image [Set Screen Gamma](https://api.coex.novastar.tech/en/api-363921242.md): 
+- Contents > Screen > Schedule [Retrieve All Schedule Information of the Screens](https://api.coex.novastar.tech/en/api-363921245.md): 
+- Contents > Screen > Schedule [Set Schedule On\Off](https://api.coex.novastar.tech/en/api-363921246.md): :::tip
+- Contents > Screen > Schedule [Delete Brightness Strategy](https://api.coex.novastar.tech/en/api-363921247.md): 
+- Contents > Screen > Color Correction [Set Color Correction On/Off](https://api.coex.novastar.tech/en/api-363921248.md): :::tip
+- Contents > Screen > Color Correction [Set Color Correction Data (Black/White)](https://api.coex.novastar.tech/en/api-363921249.md): :::tip
+- Contents > Screen > Color Correction [Set Color Correction Data (Other Colors)](https://api.coex.novastar.tech/en/api-363921250.md): :::tip
+- Contents > Screen > Layer [Switch Source for Layer](https://api.coex.novastar.tech/en/api-363921251.md): :::tip
+- Contents > Screen > Process > 3D LUT [Import 3D LUT File](https://api.coex.novastar.tech/en/api-363921252.md): 
+- Contents > Screen > Process > 3D LUT [Delete 3D LUT File](https://api.coex.novastar.tech/en/api-363921253.md): 
+- Contents > Screen > Process > 3D LUT [Set 3D LUT Strength](https://api.coex.novastar.tech/en/api-363921254.md): 
+- Contents > Screen > Process > 3D LUT [Enable 3D LUT](https://api.coex.novastar.tech/en/api-363921255.md): 
+- Contents > Screen > Canvas [Canvas Mapping](https://api.coex.novastar.tech/en/api-363921256.md): 
+- Contents > Screen > Preset [Retrieve Preset Information](https://api.coex.novastar.tech/en/api-363921257.md): :::tip
+- Contents > Screen > Preset [Apply Preset](https://api.coex.novastar.tech/en/api-363921258.md): 
+- Contents > Screen > Preset [Modify Preset](https://api.coex.novastar.tech/en/api-363921259.md): 
+- Contents > Screen > Output > 3D > 3D Emitter [Enable 3D Emitter](https://api.coex.novastar.tech/en/api-363921264.md): 
+- Contents > Screen > Output > 3D [Enable/Disable 3D](https://api.coex.novastar.tech/en/api-363921263.md): 
+- Contents > Screen > Output > Retrieve Output Parameters [Retrieve Screen Output Data](https://api.coex.novastar.tech/en/api-363921265.md): 
+- Contents > Screen > Output > Display Mode [Set Blackout/Freeze Screen](https://api.coex.novastar.tech/en/api-363921266.md): 
+- Contents > Screen > Output > Multi-Mode [Set Multi-mode by Screens](https://api.coex.novastar.tech/en/api-363921267.md): 
+- Contents > Screen > Output [Retrieve Display Status](https://api.coex.novastar.tech/en/api-363921260.md): 
+- Contents > Screen > Output [Set Output Bit Depth](https://api.coex.novastar.tech/en/api-363921261.md): 
+- Contents > Screen > Output [Output Sync Source Switching](https://api.coex.novastar.tech/en/api-363921262.md): 
+- Contents > Screen [Retrieve the Number of Cabinets of the Screen](https://api.coex.novastar.tech/en/api-363921232.md): 
+- Contents > Screen [Retrieve Screen Information](https://api.coex.novastar.tech/en/api-363921233.md): 
+- Contents > Screen [Retrieve Screen Properties Information](https://api.coex.novastar.tech/en/api-363921234.md): 
+- Contents > Device > Audio [Set Output Audio](https://api.coex.novastar.tech/en/api-363921270.md): :::info[]
+- Contents > Device > Audio [Retrieve Audio Settings](https://api.coex.novastar.tech/en/api-363921271.md): :::info[]
+- Contents > Device > Controller Identify [Controller Identify](https://api.coex.novastar.tech/en/api-363921272.md): :::tip
+- Contents > Device > Device Backup [Retrieve Device Backup Status](https://api.coex.novastar.tech/en/api-363921273.md): :::tip
+- Contents > Device > Device Backup [Primary/Backup Verify](https://api.coex.novastar.tech/en/api-363921274.md): :::tip
+- Contents > Device > Logs [Export Log](https://api.coex.novastar.tech/en/api-363921275.md): :::tip
+- Contents > Device > Controller Time [Set System Time](https://api.coex.novastar.tech/en/api-363921276.md): :::tip
+- Contents > Device > Controller Time [Automatic Time Setting On/Off](https://api.coex.novastar.tech/en/api-363921277.md): :::tip
+- Contents > Device > Controller Time [Change the time zone](https://api.coex.novastar.tech/en/api-363921278.md): :::tip
+- Contents > Device > Controller Name [Change Controller Name](https://api.coex.novastar.tech/en/api-363921279.md): :::tip
+- Contents > Device > SNMP [Retrieve SNMP On/Off Status](https://api.coex.novastar.tech/en/api-363921280.md): :::tip
+- Contents > Device > SNMP [Set SNMP On/Off](https://api.coex.novastar.tech/en/api-363921281.md): :::tip
+- Contents > Device > Multifunction Card [Retrieve Multifunction Card Information](https://api.coex.novastar.tech/en/api-363921282.md): :::tip
+- Contents > Device > Device Identify [Device Identify](https://api.coex.novastar.tech/en/api-363921283.md): :::tip
+- Contents > Device > Monitoring [Retrieve Real-Time Monitoring Information](https://api.coex.novastar.tech/en/api-363921284.md): 
+- Contents > Device [Set Blackout/Freeze Screen](https://api.coex.novastar.tech/en/api-363921268.md): 
+- Contents > Device [Retrieve Device Information](https://api.coex.novastar.tech/en/api-363921269.md): :::tip
+- Contents > Cabinet > Pre-stored Image [Set No Data Signal](https://api.coex.novastar.tech/en/api-363921287.md): :::tip
+- Contents > Cabinet > Thermal Calibration [Set Thermal Compensation On/Off](https://api.coex.novastar.tech/en/api-363921288.md): :::tip
+- Contents > Cabinet > Thermal Calibration [Thermal Compensation Intensity Adjustment](https://api.coex.novastar.tech/en/api-363921289.md): :::tip
+- Contents > Cabinet > Thermal Calibration [Set Thermal Compensation Mode](https://api.coex.novastar.tech/en/api-363921290.md): :::tip
+- Contents > Cabinet > Brightness Adjustment [Set Cabinet RGB Brightness](https://api.coex.novastar.tech/en/api-363921291.md): 
+- Contents > Cabinet > Brightness Adjustment [Set Cabinet Brightness](https://api.coex.novastar.tech/en/api-363921292.md): :::tip
+- Contents > Cabinet > Adjust Color Temperature [Adjust Cabinet Color Temperature](https://api.coex.novastar.tech/en/api-363921293.md): 
+- Contents > Cabinet > Cabinet Display Control [Set Receiving Card Test Pattern](https://api.coex.novastar.tech/en/api-363921294.md): 
+- Contents > Cabinet > Cabinet Identify [Enable Cabinet Mapping](https://api.coex.novastar.tech/en/api-363921295.md): 
+- Contents > Cabinet > Multi-Mode [Set Multi-mode by Cabinets](https://api.coex.novastar.tech/en/api-363921296.md): :::tip
+- Contents > Cabinet > Configure Cabinet Topology [Move Cabinet](https://api.coex.novastar.tech/en/api-363921297.md): 
+- Contents > Cabinet [Retrieve All Cabinet Information](https://api.coex.novastar.tech/en/api-363921285.md): 
+- Contents > Cabinet [Set Cabinet RGBW Brightness Components](https://api.coex.novastar.tech/en/api-363921286.md): :::info[]
