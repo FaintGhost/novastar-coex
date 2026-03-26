@@ -1,15 +1,16 @@
 import ky from "ky";
+import type { ApiResponse, RGBColor, LayerSource, CanvasConfig } from "../types.js";
 
 export interface ScreenApi {
   // Screen info and properties
-  screen: () => Promise<any>;
-  getScreenProperties: () => Promise<any>;
-  getCabinetCount: () => Promise<any>;
+  screen: () => Promise<unknown>;
+  getScreenProperties: () => Promise<unknown>;
+  getCabinetCount: () => Promise<unknown>;
 
   // Display modes
   displaymode: (value: number, canvasIDs?: number[]) => Promise<void>;
-  getDisplayState: () => Promise<any>;
-  getDisplayParams: () => Promise<any>;
+  getDisplayState: () => Promise<unknown>;
+  getDisplayParams: () => Promise<unknown>;
 
   // Brightness
   brightness: (brightness: number, screenIds?: string[]) => Promise<void>;
@@ -23,7 +24,7 @@ export interface ScreenApi {
   setCustomGamma: (screenId: string, gammaTable: number[]) => Promise<void>;
 
   // Image/Output
-  setCustomGamut: (screenIdList: string[], gamutData: any) => Promise<void>;
+  setCustomGamut: (screenIdList: string[], gamutData: RGBColor) => Promise<void>;
   switchColorGamut: (screenIdList: string[], gamutType: number) => Promise<void>;
   setBrightnessLimitOnOff: (state: boolean, screenIdList: string[]) => Promise<void>;
   setBrightnessLimitValue: (
@@ -41,26 +42,26 @@ export interface ScreenApi {
 
   // Color Correction
   setColorCorrectionOnOff: (enable: boolean, screenIdList: string[]) => Promise<void>;
-  setColorCorrectionBlackWhite: (data: any[]) => Promise<void>;
-  setColorCorrectionOtherColors: (data: any[][]) => Promise<void>;
+  setColorCorrectionBlackWhite: (data: RGBColor[]) => Promise<void>;
+  setColorCorrectionOtherColors: (data: Array<{ hue: number; sat: number; value: number }>) => Promise<void>;
 
   // Schedule
-  getAllScheduleInfo: () => Promise<any>;
+  getAllScheduleInfo: () => Promise<unknown>;
   setScheduleOnOff: (screenId: string, enable: boolean) => Promise<void>;
   deleteBrightnessStrategy: (screenId: string) => Promise<void>;
 
   // Layer
-  switchLayerSource: (screenId: string, layers: { id: number; source: number }[]) => Promise<void>;
+  switchLayerSource: (screenId: string, layers: LayerSource[]) => Promise<void>;
 
   // Output
-  getScreenOutputData: () => Promise<any>;
+  getScreenOutputData: () => Promise<unknown>;
   setMultimodeByScreens: (screenIdList: string[], modeId: number) => Promise<void>;
   setOutputBitDepth: (screenIdList: string[], bitDepth: 0 | 1 | 2 | 255) => Promise<void>;
   outputSyncSourceSwitching: (enable: boolean, sourceType?: number) => Promise<void>;
   enable3DEmitter: (enable: boolean, screenIdList: string[]) => Promise<void>;
   enable3D: (enable: boolean, screenIdList: string[]) => Promise<void>;
-  setMapping: (canvasId: number, mappingData: any) => Promise<void>;
-  getScreenList: () => Promise<any>;
+  setMapping: (canvasId: number, mappingData: CanvasConfig) => Promise<void>;
+  getScreenList: () => Promise<unknown>;
 }
 
 export function createScreenApi(
@@ -167,7 +168,16 @@ export function createScreenApi(
     },
 
     // Image/Output
-    setCustomGamut: async (screenIdList: string[], gamutData: any) => {
+    setCustomGamut: async (screenIdList: string[], gamutData: RGBColor) => {
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
+      if (!gamutData || typeof gamutData !== "object") {
+        throw new Error("gamutData must be an RGBColor object");
+      }
+      if (typeof gamutData.r !== "number" || typeof gamutData.g !== "number" || typeof gamutData.b !== "number") {
+        throw new Error("gamutData must have r, g, b number properties");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/customgamut`, {
           json: { screenIdList, gamutData },
@@ -177,6 +187,12 @@ export function createScreenApi(
     },
 
     switchColorGamut: async (screenIdList: string[], gamutType: number) => {
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
+      if (typeof gamutType !== "number" || gamutType < 0) {
+        throw new Error("gamutType must be a non-negative number");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/gamut`, {
           json: { screenIdList, gamutType },
@@ -186,6 +202,12 @@ export function createScreenApi(
     },
 
     setBrightnessLimitOnOff: async (state: boolean, screenIdList: string[]) => {
+      if (typeof state !== "boolean") {
+        throw new Error("state must be a boolean");
+      }
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
       const data = await ky
         .post(`${baseurl}/api/v1/screen/output/max-brightness`, {
           json: { state, screenIdList },
@@ -213,6 +235,12 @@ export function createScreenApi(
 
     // 3D LUT
     enable3DLut: async (enable: boolean, screenIdList: string[]) => {
+      if (typeof enable !== "boolean") {
+        throw new Error("enable must be a boolean");
+      }
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/processing/threedlut/enable`, {
           json: { enable, screenIdList },
@@ -234,6 +262,15 @@ export function createScreenApi(
     },
 
     import3DLutFile: async (screenIdList: string[], file: Blob, fileName: string) => {
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
+      if (!(file instanceof Blob)) {
+        throw new Error("file must be a Blob");
+      }
+      if (typeof fileName !== "string" || fileName.length === 0) {
+        throw new Error("fileName must be a non-empty string");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/processing/threedlut/file`, {
           body: (() => {
@@ -248,6 +285,12 @@ export function createScreenApi(
     },
 
     delete3DLutFile: async (screenIdList: string[], fileName: string) => {
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
+      if (typeof fileName !== "string" || fileName.length === 0) {
+        throw new Error("fileName must be a non-empty string");
+      }
       const data = await ky
         .delete(`${baseurl}/api/v1/screen/processing/threedlut/file`, {
           json: { screenIdList, fileName },
@@ -259,25 +302,31 @@ export function createScreenApi(
     // Color Correction
     setColorCorrectionOnOff: async (enable: boolean, screenIdList: string[]) => {
       const data = await ky
-        .put(`${baseurl}/screen/processing/colorcorrect/enable`, {
+        .put(`${baseurl}/api/v1/screen/processing/colorcorrect/enable`, {
           json: { enable, screenIdList },
         })
         .json();
       await responseparser(data);
     },
 
-    setColorCorrectionBlackWhite: async (data: any[]) => {
+    setColorCorrectionBlackWhite: async (data: unknown[]) => {
+      if (!Array.isArray(data)) {
+        throw new Error("data must be an array");
+      }
       const response = await ky
-        .put(`${baseurl}/screen/processing/colorcorrect/whiteblack`, {
+        .put(`${baseurl}/api/v1/screen/processing/colorcorrect/whiteblack`, {
           json: { data },
         })
         .json();
       await responseparser(response);
     },
 
-    setColorCorrectionOtherColors: async (data: any[][]) => {
+    setColorCorrectionOtherColors: async (data: unknown[][]) => {
+      if (!Array.isArray(data)) {
+        throw new Error("data must be an array");
+      }
       const response = await ky
-        .put(`${baseurl}/screen/processing/colorcorrect/data`, {
+        .put(`${baseurl}/api/v1/screen/processing/colorcorrect/data`, {
           json: { data },
         })
         .json();
@@ -348,7 +397,7 @@ export function createScreenApi(
 
     outputSyncSourceSwitching: async (enable: boolean, sourceType?: number) => {
       const data = await ky
-        .put(`${baseurl}/screen/output/sync/source`, {
+        .put(`${baseurl}/api/v1/screen/output/sync/source`, {
           json: { enable, sourceType },
         })
         .json();
@@ -356,8 +405,11 @@ export function createScreenApi(
     },
 
     enable3DEmitter: async (enable: boolean, screenIdList: string[]) => {
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
       const data = await ky
-        .put(`${baseurl}/screen/output/threed/emitter`, {
+        .put(`${baseurl}/api/v1/screen/output/threed/emitter`, {
           json: { enable, screenIdList },
         })
         .json();
@@ -365,6 +417,12 @@ export function createScreenApi(
     },
 
     enable3D: async (enable: boolean, screenIdList: string[]) => {
+      if (typeof enable !== "boolean") {
+        throw new Error("enable must be a boolean");
+      }
+      if (!Array.isArray(screenIdList) || screenIdList.length === 0) {
+        throw new Error("screenIdList must be a non-empty array");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/threed/enable`, {
           json: { enable, screenIdList },
@@ -373,7 +431,16 @@ export function createScreenApi(
       await responseparser(data);
     },
 
-    setMapping: async (canvasId: number, mappingData: any) => {
+    setMapping: async (canvasId: number, mappingData: CanvasConfig) => {
+      if (typeof canvasId !== "number" || canvasId < 0) {
+        throw new Error("canvasId must be a non-negative number");
+      }
+      if (!mappingData || typeof mappingData !== "object") {
+        throw new Error("mappingData must be a CanvasConfig object");
+      }
+      if (!Array.isArray(mappingData.cabinets)) {
+        throw new Error("mappingData.cabinets must be an array");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/canvas/mapping`, {
           json: { canvasId, mappingData },

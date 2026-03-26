@@ -50,7 +50,7 @@ export function createCabinetApi(
       throw new Error("prestoreImageType must be 0 (black) or 1 (last frame)");
     }
 
-    const url = `${baseurl}/device/cabinet/prestoreimage`;
+    const url = `${baseurl}/api/v1/device/cabinet/prestoreimage`;
     const payload = { idList, sourceType, prestoreImageType };
     const response = await ky.put(url, { json: payload });
     const data = (await response.json()) as ApiResponse;
@@ -85,7 +85,7 @@ export function createCabinetApi(
       throw new Error("amount must be a number between 0 and 255");
     }
 
-    const url = `${baseurl}/device/correctionop/cabinets/thermacal/amount`;
+    const url = `${baseurl}/api/v1/device/correctionop/cabinets/thermacal/amount`;
     const payload = { idList, amount };
     const response = await ky.put(url, { json: payload });
     const data = (await response.json()) as ApiResponse;

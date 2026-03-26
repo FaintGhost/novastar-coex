@@ -23,7 +23,7 @@ const server = setupServer(
   http.put(`${BASE_URL}/api/v1/device/input/:id/hdrmode`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/device/input/internalsource`, () =>
+  http.put(`${BASE_URL}/api/v1/device/input/internalsource`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.put(`${BASE_URL}/api/v1/device/input/pattern/test`, () =>
@@ -59,7 +59,7 @@ const server = setupServer(
   http.get(`${BASE_URL}/api/v1/device/audio`, () =>
     HttpResponse.json({ code: 0, data: { enable: true, source: 1 }, message: "Success" })
   ),
-  http.post(`${BASE_URL}/device/hw/colorBeacon`, () =>
+  http.post(`${BASE_URL}/api/v1/device/hw/colorBeacon`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.get(`${BASE_URL}/api/v1/device/backup`, () =>
@@ -68,7 +68,7 @@ const server = setupServer(
   http.post(`${BASE_URL}/api/v1/device/backup/verify`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.get(`${BASE_URL}/device/hw/log`, () =>
+  http.get(`${BASE_URL}/api/v1/device/hw/log`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.put(`${BASE_URL}/api/v1/device/hw/systemtime`, () =>
@@ -80,7 +80,7 @@ const server = setupServer(
   http.post(`${BASE_URL}/api/v1/device/timezone`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/device/hw/customname`, () =>
+  http.put(`${BASE_URL}/api/v1/device/hw/customname`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.get(`${BASE_URL}/api/v1/device/snmpstate`, () =>
@@ -147,13 +147,13 @@ const server = setupServer(
   http.delete(`${BASE_URL}/api/v1/screen/processing/threedlut/file`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/screen/processing/colorcorrect/enable`, () =>
+  http.put(`${BASE_URL}/api/v1/screen/processing/colorcorrect/enable`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/screen/processing/colorcorrect/whiteblack`, () =>
+  http.put(`${BASE_URL}/api/v1/screen/processing/colorcorrect/whiteblack`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/screen/processing/colorcorrect/data`, () =>
+  http.put(`${BASE_URL}/api/v1/screen/processing/colorcorrect/data`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.get(`${BASE_URL}/api/v1/screen/schedule/all`, () =>
@@ -177,10 +177,10 @@ const server = setupServer(
   http.put(`${BASE_URL}/api/v1/screen/output/bitdepth`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/screen/output/sync/source`, () =>
+  http.put(`${BASE_URL}/api/v1/screen/output/sync/source`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/screen/output/threed/emitter`, () =>
+  http.put(`${BASE_URL}/api/v1/screen/output/threed/emitter`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.put(`${BASE_URL}/api/v1/screen/output/threed/enable`, () =>
@@ -193,13 +193,13 @@ const server = setupServer(
     HttpResponse.json({ code: 0, data: [{ screenID: "screen1" }], message: "Success" })
   ),
   // Cabinet handlers - using path to handle non-standard prefixes
-  http.put(`${BASE_URL}/device/cabinet/prestoreimage`, () =>
+  http.put(`${BASE_URL}/api/v1/device/cabinet/prestoreimage`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.put(`${BASE_URL}/api/v1/device/correctionop/cabinets/thermacal/enable`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
-  http.put(`${BASE_URL}/device/correctionop/cabinets/thermacal/amount`, () =>
+  http.put(`${BASE_URL}/api/v1/device/correctionop/cabinets/thermacal/amount`, () =>
     HttpResponse.json({ code: 0, data: {}, message: "Success" })
   ),
   http.put(`${BASE_URL}/api/v1/device/correctionop/cabinets/thermacal/mode`, () =>
@@ -485,7 +485,7 @@ describe("COEX API Tests", () => {
       });
 
       it("should reject non-boolean enable", async () => {
-        await expect(api.setOutputAudio("true" as unknown as boolean, 1)).rejects.toThrow("enable must be a boolean");
+        await expect(api.setOutputAudio("true", 1)).rejects.toThrow("enable must be a boolean");
       });
     });
 
@@ -890,7 +890,12 @@ describe("COEX API Tests", () => {
 
     describe("setMapping", () => {
       it("should set mapping", async () => {
-        await expect(api.setMapping(1, { width: 1920, height: 1080 })).resolves.toBeUndefined();
+        await expect(
+          api.setMapping(1, {
+            canvasID: 1,
+            cabinets: [],
+          })
+        ).resolves.toBeUndefined();
       });
     });
 

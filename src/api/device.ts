@@ -122,7 +122,7 @@ export function createDeviceApi(
       throw new Error(`Invalid bitdepth: ${bitdepth}. Must be one of 0, 1, 2 (8bit, 10bit, 12bit)`);
     }
 
-    const url = `${baseurl}/device/input/internalsource`;
+    const url = `${baseurl}/api/v1/device/input/internalsource`;
     const payload = {
       width,
       height,
@@ -353,7 +353,7 @@ export function createDeviceApi(
       throw new Error("Invalid color values: r, g, b must be between 0 and 255");
     }
 
-    const url = `${baseurl}/device/hw/colorBeacon`;
+    const url = `${baseurl}/api/v1/device/hw/colorBeacon`;
     const payload = { enable, color: { r, g, b } };
     const response = await ky.post(url, { json: payload });
     const data = (await response.json()) as ApiResponse;
@@ -383,7 +383,7 @@ export function createDeviceApi(
 
   // Export Log
   const exportLog = async (): Promise<unknown> => {
-    const url = `${baseurl}/device/hw/log`;
+    const url = `${baseurl}/api/v1/device/hw/log`;
     const response = await ky.get(url);
     return response.json();
   };
@@ -434,7 +434,7 @@ export function createDeviceApi(
       throw new Error("Invalid customName: must be 255 characters or less");
     }
 
-    const url = `${baseurl}/device/hw/customname`;
+    const url = `${baseurl}/api/v1/device/hw/customname`;
     const payload = { customName };
     const response = await ky.put(url, { json: payload });
     const data = (await response.json()) as ApiResponse;
