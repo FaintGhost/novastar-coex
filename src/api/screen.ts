@@ -93,7 +93,7 @@ export function createScreenApi(
           json: { value, canvasIDs },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     getDisplayState: async () => {
@@ -108,41 +108,53 @@ export function createScreenApi(
 
     // Brightness
     brightness: async (brightness: number, screenIds?: string[]) => {
+      if (typeof brightness !== "number" || brightness < 0 || brightness > 100) {
+        throw new Error("brightness must be between 0 and 100");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/brightness`, {
           json: { brightness, screenIds },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     screenbrightness: async (brightness: number, screenIds: string[]) => {
+      if (!Array.isArray(screenIds) || screenIds.length === 0) {
+        throw new Error("screenIds must be a non-empty array");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/brightness`, {
           json: { brightness, screenIds },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Color temperature
     colortemperature: async (colorTemp: number, screenIds?: string[]) => {
+      if (typeof colorTemp !== "number" || colorTemp < 1000 || colorTemp > 12000) {
+        throw new Error("colorTemp must be between 1000 and 12000");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/colortemperature`, {
           json: { colorTemp, screenIds },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Gamma
     gamma: async (gamma: number, screenIds?: string[]) => {
+      if (typeof gamma !== "number" || gamma < 1.0 || gamma > 4.0) {
+        throw new Error("gamma must be between 1.0 and 4.0");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/gamma`, {
           json: { gamma, screenIds },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setCustomGamma: async (screenId: string, gammaTable: number[]) => {
@@ -151,7 +163,7 @@ export function createScreenApi(
           json: { screenId, gammaTable },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Image/Output
@@ -161,7 +173,7 @@ export function createScreenApi(
           json: { screenIdList, gamutData },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     switchColorGamut: async (screenIdList: string[], gamutType: number) => {
@@ -170,7 +182,7 @@ export function createScreenApi(
           json: { screenIdList, gamutType },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setBrightnessLimitOnOff: async (state: boolean, screenIdList: string[]) => {
@@ -179,7 +191,7 @@ export function createScreenApi(
           json: { state, screenIdList },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setBrightnessLimitValue: async (
@@ -188,12 +200,15 @@ export function createScreenApi(
       nit?: number,
       ratio?: number,
     ) => {
+      if (type !== 2 && type !== 3) {
+        throw new Error("type must be 2 or 3");
+      }
       const data = await ky
         .post(`${baseurl}/api/v1/screen/output/max-brightness`, {
           json: { screenIdList, type, nit, ratio },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // 3D LUT
@@ -203,16 +218,19 @@ export function createScreenApi(
           json: { enable, screenIdList },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     set3DLutStrength: async (screenIdList: string[], strength: number) => {
+      if (typeof strength !== "number" || strength < 0 || strength > 100) {
+        throw new Error("strength must be between 0 and 100");
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/processing/threedlut/strength`, {
           json: { screenIdList, strength },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     import3DLutFile: async (screenIdList: string[], file: Blob, fileName: string) => {
@@ -226,7 +244,7 @@ export function createScreenApi(
           })(),
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     delete3DLutFile: async (screenIdList: string[], fileName: string) => {
@@ -235,7 +253,7 @@ export function createScreenApi(
           json: { screenIdList, fileName },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Color Correction
@@ -245,7 +263,7 @@ export function createScreenApi(
           json: { enable, screenIdList },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setColorCorrectionBlackWhite: async (data: any[]) => {
@@ -254,7 +272,7 @@ export function createScreenApi(
           json: { data },
         })
         .json();
-      return responseparser(response);
+      await responseparser(response);
     },
 
     setColorCorrectionOtherColors: async (data: any[][]) => {
@@ -263,7 +281,7 @@ export function createScreenApi(
           json: { data },
         })
         .json();
-      return responseparser(response);
+      await responseparser(response);
     },
 
     // Schedule
@@ -278,7 +296,7 @@ export function createScreenApi(
           json: { screenId, enable },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     deleteBrightnessStrategy: async (screenId: string) => {
@@ -287,7 +305,7 @@ export function createScreenApi(
           json: { screenId },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Layer
@@ -297,7 +315,7 @@ export function createScreenApi(
           json: { screenId, layers },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     // Output
@@ -312,16 +330,20 @@ export function createScreenApi(
           json: { screenIdList, modeId },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setOutputBitDepth: async (screenIdList: string[], bitDepth: 0 | 1 | 2 | 255) => {
+      const validBitDepths = [0, 1, 2, 255];
+      if (!validBitDepths.includes(bitDepth)) {
+        throw new Error(`bitDepth must be one of: ${validBitDepths.join(", ")}`);
+      }
       const data = await ky
         .put(`${baseurl}/api/v1/screen/output/bitdepth`, {
           json: { screenIdList, bitDepth },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     outputSyncSourceSwitching: async (enable: boolean, sourceType?: number) => {
@@ -330,7 +352,7 @@ export function createScreenApi(
           json: { enable, sourceType },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     enable3DEmitter: async (enable: boolean, screenIdList: string[]) => {
@@ -339,7 +361,7 @@ export function createScreenApi(
           json: { enable, screenIdList },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     enable3D: async (enable: boolean, screenIdList: string[]) => {
@@ -348,7 +370,7 @@ export function createScreenApi(
           json: { enable, screenIdList },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     setMapping: async (canvasId: number, mappingData: any) => {
@@ -357,7 +379,7 @@ export function createScreenApi(
           json: { canvasId, mappingData },
         })
         .json();
-      return responseparser(data);
+      await responseparser(data);
     },
 
     getScreenList: async () => {

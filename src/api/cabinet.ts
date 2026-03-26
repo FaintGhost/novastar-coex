@@ -43,7 +43,7 @@ export function createCabinetApi(
     if (!Array.isArray(idList) || idList.length === 0) {
       throw new Error("idList must be a non-empty array");
     }
-    if (typeof sourceType !== "number") {
+    if (sourceType !== 0 && sourceType !== 1) {
       throw new Error("sourceType must be a number (1 = follow output)");
     }
     if (prestoreImageType !== 0 && prestoreImageType !== 1) {
